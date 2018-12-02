@@ -7,6 +7,7 @@ import lee.fund.util.lang.ClassesUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -28,7 +29,7 @@ public class RpcApplication extends AbstractApplication {
     @Override
     protected void load() {
         this.scanService();
-        this.rpcServer.openServer();
+        this.rpcServer.start();
     }
 
     public void scanService(){
@@ -36,11 +37,12 @@ public class RpcApplication extends AbstractApplication {
         if (packages.length == 0) {
             logger.info("there are no class files under the iface folder");
         }
-        for (String pkg : packages) {
-            List<String> serviceList = ClassesUtils.getClassListByPackage(pkg);
+
+        Arrays.stream(packages).forEach(t->{
+            List<String> serviceList = ClassesUtils.getClassListByPackage(t);
             logger.info("there are {} class files under the iface folder",serviceList.size());
             serviceList.forEach(this::doScanService);
-        }
+        });
     }
 
     private void doScanService(String serviceName) {

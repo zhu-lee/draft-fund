@@ -11,15 +11,15 @@ import java.util.Map;
 /**
  * 支持错误代码的异常类。
  */
-public class WrongException extends RuntimeException {
+public class FaultException extends RuntimeException {
     private final int errorCode;
     private Map<String, Object> data;
 
-    public WrongException() {
+    public FaultException() {
         errorCode = -1;
     }
 
-    public WrongException(String message) {
+    public FaultException(String message) {
         super(message);
         errorCode = -1;
     }
@@ -30,26 +30,26 @@ public class WrongException extends RuntimeException {
      * @param messageFormat
      * @param messageArgs
      */
-    public WrongException(String messageFormat, Object... messageArgs) {
+    public FaultException(String messageFormat, Object... messageArgs) {
         super(MessageFormat.format(messageFormat, messageArgs));
         errorCode = -1;
     }
 
-    public WrongException(int errorCode, String message) {
+    public FaultException(int errorCode, String message) {
         super(message);
         this.errorCode = errorCode;
     }
 
-    public WrongException(int errorCode, String messageFormat, Object... messageArgs) {
+    public FaultException(int errorCode, String messageFormat, Object... messageArgs) {
         this(errorCode, MessageFormat.format(messageFormat, messageArgs));
     }
 
-    public WrongException(int errorCode, String message, Throwable cause) {
+    public FaultException(int errorCode, String message, Throwable cause) {
         super(message, cause);
         this.errorCode = errorCode;
     }
 
-    public WrongException(Throwable cause) {
+    public FaultException(Throwable cause) {
         super(cause);
         errorCode = -1;
     }
@@ -155,19 +155,19 @@ public class WrongException extends RuntimeException {
     }
 
 
-    public static <T extends ErrorInfo> WrongException of(T error) {
-        return new WrongException(error.getCode(), error.getMessage());
+    public static <T extends ErrorInfo> FaultException of(T error) {
+        return new FaultException(error.getCode(), error.getMessage());
     }
 
-    public static <T extends ErrorInfo> WrongException of(T error, Object... messageArgs) {
-        return new WrongException(error.getCode(), MessageFormat.format(error.getMessage(), messageArgs));
+    public static <T extends ErrorInfo> FaultException of(T error, Object... messageArgs) {
+        return new FaultException(error.getCode(), MessageFormat.format(error.getMessage(), messageArgs));
     }
 
-    public static <T extends ErrorInfo> WrongException of(Throwable cause, T error) {
-        return new WrongException(error.getCode(), error.getMessage(), cause);
+    public static <T extends ErrorInfo> FaultException of(Throwable cause, T error) {
+        return new FaultException(error.getCode(), error.getMessage(), cause);
     }
 
-    public static <T extends ErrorInfo> WrongException of(Throwable cause, T error, Object... messageArgs) {
-        return new WrongException(error.getCode(), MessageFormat.format(error.getMessage(), messageArgs), cause);
+    public static <T extends ErrorInfo> FaultException of(Throwable cause, T error, Object... messageArgs) {
+        return new FaultException(error.getCode(), MessageFormat.format(error.getMessage(), messageArgs), cause);
     }
 }

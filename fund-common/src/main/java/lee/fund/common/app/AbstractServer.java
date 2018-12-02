@@ -1,10 +1,11 @@
 package lee.fund.common.app;
 
 import lee.fund.common.Server;
-import lee.fund.common.config.Configuration;
+import lee.fund.common.annotation.RpcService;
 import lee.fund.common.container.ServiceContainer;
 import lee.fund.common.netty.server.NettyServer;
 import lee.fund.common.netty.server.ServerConfig;
+import lee.fund.util.lang.StrKit;
 
 /**
  * Author: zhu.li
@@ -36,20 +37,7 @@ public abstract class AbstractServer implements Server{
 //        if (RpcClient.isProxy(instance)) {
 //            throw new RuntimeException(String.format("can't register a proxy object as service [%s], this will cause dead circulation", clazz.getName()));
 //        }
-//        RpcService rpcService = clazz.getAnnotation(RpcService.class);
-//        String description = rpcService == null ? "" : rpcService.description();
-//        NamingConvention convention = rpcService == null ? NamingConvention.PASCAL : rpcService.convention();
-//
-//        String name = null;
-//        if (rpcService != null) {
-//            name = rpcService.name();
-//        }
-//        if (StrKit.isBlank(name)) {
-//            name = clazz.getSimpleName();
-//        }
-//
-//        this.registerService(clazz, instance, name, description, convention);
-
+        this.serviceContainer.storeService(clazz, instance);
         this.nettyServer.setServiceContainer(this.serviceContainer);
     }
 

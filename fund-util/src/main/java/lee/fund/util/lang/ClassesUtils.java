@@ -49,8 +49,7 @@ public class ClassesUtils {
 
     private static List<String> getClassListByFile(String rootPath, String filePath) {
         File file = new File(filePath);
-        List<File> fileList=Arrays.asList(file.listFiles());
-        List<String> list = fileList.stream().filter(t -> (!t.isDirectory() && t.getPath().endsWith(".class"))).map(t -> {
+        List<String> list = Arrays.stream(file.listFiles()).filter(t -> (!t.isDirectory() && t.getPath().endsWith(".class"))).map(t -> {
             String childFilePath = t.getPath().substring(rootPath.length());
             childFilePath = childFilePath.substring(0, childFilePath.length() - 6).replace(File.separator, ".");
             return childFilePath;

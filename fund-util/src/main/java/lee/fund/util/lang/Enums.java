@@ -38,7 +38,7 @@ public class Enums {
         Object v = map.get(value);
         if (v == null) {
             if (throwIfUndefined) {
-                throw new WrongException(String.format("Undefined enum %s: %s", enumClass.getSimpleName(), value));
+                throw new FaultException(String.format("Undefined enum %s: %s", enumClass.getSimpleName(), value));
             }
             return null;
         }

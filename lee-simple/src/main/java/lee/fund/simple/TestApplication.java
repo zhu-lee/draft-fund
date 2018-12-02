@@ -4,7 +4,6 @@ import lee.fund.common.config.Configuration;
 import lee.fund.remoting.application.RpcApplication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**

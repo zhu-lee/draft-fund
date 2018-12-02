@@ -5,16 +5,16 @@ import java.util.Objects;
 /**
  * Created by noname on 15/12/6.
  */
-public enum NamingConventionEnum {
+public enum NamingConvertEnum {
     CAMEL("camel"), PASCAL("pascal");
 
     String name;
 
-    NamingConventionEnum(String name) {
+    NamingConvertEnum(String name) {
         this.name = name;
     }
 
-    public static NamingConventionEnum of(String name) {
+    public static NamingConvertEnum of(String name) {
         Objects.requireNonNull(name, "name");
         switch (name.toLowerCase()) {
             case "camel":
@@ -26,9 +26,9 @@ public enum NamingConventionEnum {
         }
     }
 
-    public static String transform(String name, NamingConventionEnum convention) {
+    public static String transform(String name, NamingConvertEnum convention) {
         Character firstLetter = name.charAt(0);
-        if (convention == NamingConventionEnum.PASCAL) {
+        if (convention == NamingConvertEnum.PASCAL) {
             firstLetter = Character.toUpperCase(firstLetter);
         } else {
             firstLetter = Character.toLowerCase(firstLetter);
