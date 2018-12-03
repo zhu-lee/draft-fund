@@ -19,7 +19,5 @@ public class TestApplication {
         Configuration configuration=new Configuration();
         RpcApplication app = new RpcApplication(TestApplication.class, configuration, args);
         app.run();
-        logger.info("启动完成");
-        System.in.read();
     }
 }

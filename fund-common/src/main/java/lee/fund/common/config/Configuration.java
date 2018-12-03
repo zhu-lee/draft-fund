@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Author: zhu.li
@@ -25,6 +26,9 @@ public class Configuration {
     private boolean registry;
     private int connections;
     private String desc;
+    private boolean debug;
+    private boolean monitorEnabled;
+    private int monitorPort;
 
     public Configuration(){
         loadConfiguration();
@@ -65,6 +69,15 @@ public class Configuration {
         String desc = XmlUtils.getXmlString(xmlMap, "desc");
         requireNonNull(desc, "desc", fileName);
         this.setDesc(desc);
+
+        Optional<Boolean> debugOptional = Optional.ofNullable(XmlUtils.getXmlBoolean(xmlMap, "debug"));
+        debugOptional.ifPresent(o->this.setDebug(o));
+
+        Optional<Boolean> monitorEnabledOptional = Optional.ofNullable(XmlUtils.getXmlBoolean(xmlMap, "monitor_enabled"));
+        monitorEnabledOptional.ifPresent(o->this.setMonitorEnabled(o));
+
+        Optional<Integer> monitorPortOptional = Optional.ofNullable(XmlUtils.getXmlInt(xmlMap, "monitor_port"));
+        monitorPortOptional.ifPresent(o -> this.setMonitorPort(o));
     }
 
     private void requireNonNull(Object va,String filed,String fileName) {

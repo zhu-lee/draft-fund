@@ -16,24 +16,4 @@ public class RpcServer extends AbstractServer{
     public RpcServer(Configuration configuration){
         super(new ServerConfig(configuration));
     }
-
-    @Override
-    public void exposeService(Class<?> clazz, Object instance) {
-        super.exposeService(clazz,instance);
-    }
-
-    @Override
-    public void start() {
-        super.start();
-    }
-
-    @Override
-    public void shutdown() {
-        super.shutdown();
-    }
-
-    @Override
-    public void register() {
-
-    }
 }

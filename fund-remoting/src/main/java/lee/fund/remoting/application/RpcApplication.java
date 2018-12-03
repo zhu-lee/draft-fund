@@ -18,11 +18,10 @@ import java.util.List;
  */
 public class RpcApplication extends AbstractApplication {
     private final Logger logger = LoggerFactory.getLogger(ClassesUtils.class);
-
     private RpcServer rpcServer;
 
     public RpcApplication(Class<?> bootStrap, Configuration configuration, String[] args) {
-        super(bootStrap, args);
+        super(bootStrap, args, configuration);
         this.rpcServer = new RpcServer(configuration);
     }
 
