@@ -47,10 +47,15 @@ public abstract class AbstractApplication {
         try {
             if (configuration.isMonitorEnabled() && configuration.getMonitorPort() > 0) {
                 HttpMonitor monitor = new HttpMonitor(new InetSocketAddress(configuration.getMonitorPort()),false);
+                setMonitor();
 //                monitor
             }
         } catch (Exception e) {
 
         }
+    }
+
+    protected void setMonitor() {
+
     }
 }
