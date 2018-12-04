@@ -4,6 +4,7 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import lee.fund.util.convert.DateConverter;
+import lee.fund.util.remote.RemotingUtils;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -11,9 +12,7 @@ import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
@@ -29,28 +28,19 @@ public class HttpMonitor {
     private final ExecutorService executorService;
     private final LocalDateTime startTime = LocalDateTime.now();
     private final int nThread = 10;
+
     public HttpMonitor(InetSocketAddress address,boolean daemon) throws IOException {
         this.httpServer = HttpServer.create(address, nThread);
         this.daemon = daemon;
-        this.executorService = Executors.newFixedThreadPool(5, new ThreadFactory() {
-            private AtomicInteger threadIndex = new AtomicInteger(0);
-            @Override
-            public Thread newThread(Runnable r) {
-                Thread t = new Thread(r, "HttpMonitor_" + threadIndex.incrementAndGet());
-                t.setDaemon(daemon);
-                return t;
-            }
-        });
+        this.executorService = Executors.newFixedThreadPool(5, new InnerThreadFactory("HttpMonitor",daemon));
         this.httpServer.setExecutor(executorService);
         initMonitor();
     }
 
     public void initMonitor() {
-        this.register("/", new SimpleHandler(e -> String.format("start time: %s, process: %s",
-                DateConverter.toString(this.startTime),
-                MXUtil.getPID())));
-        this.register("/$dep", new SimpleHandler(e -> Dependency.print()));
-        register("/metrics", new MetricHandler(CollectorRegistry.defaultRegistry));
+        this.register("/$st", new SimpleHandler(e -> String.format("start time: %s, process: %s", DateConverter.toString(this.startTime), RemotingUtils.getPid())));
+//        this.register("/$dep", new SimpleHandler(e -> Dependency.print()));
+//        this.register("/metrics", new MetricHandler(CollectorRegistry.defaultRegistry));
     }
 
     public void register(String path, HttpHandler handler) {
@@ -58,7 +48,22 @@ public class HttpMonitor {
     }
 
     public void start() {
-
+        if (daemon == Thread.currentThread().isDaemon()) {
+            this.httpServer.start();
+        } else {
+            FutureTask<Void> startTask = new FutureTask<>(this.httpServer::start, null);
+            new InnerThreadFactory("HTTPSever", daemon).newThread(startTask).start();
+            try {
+                startTask.get();
+            } catch (ExecutionException e) {
+                throw new RuntimeException("Unexpected exception on starting HTTPSever", e);
+            } catch (InterruptedException e) {
+                // This is possible only if the current tread has been interrupted,
+                // but in real use cases this should not happen.
+                // In any case, there is nothing to do, except to propagate interrupted flag.
+                Thread.currentThread().interrupt();
+            }
+        }
     }
 
     static class SimpleHandler implements HttpHandler{
@@ -76,6 +81,23 @@ public class HttpMonitor {
             out.write(bytes);
             out.flush();
             httpExchange.close();
+        }
+    }
+
+    static class InnerThreadFactory implements ThreadFactory{
+        private AtomicInteger threadIndex = new AtomicInteger(0);
+        private String name;
+        private boolean daemon;
+        public InnerThreadFactory(String name,boolean daemon) {
+            this.name = name;
+            this.daemon = daemon;
+        }
+
+        @Override
+        public Thread newThread(Runnable r) {
+            Thread t = new Thread(r, String.format("%s_%s",name,threadIndex.incrementAndGet()));
+            t.setDaemon(daemon);
+            return t;
         }
     }
 }

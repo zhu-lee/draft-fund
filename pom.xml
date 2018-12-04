@@ -15,7 +15,7 @@
     <module>fund-mq</module>
     <module>fund-common</module>
     <module>fund-serialize</module>
-    <module>lee-simple</module>
+    <module>example</module>
   </modules>
 
   <!--版本变量-->
