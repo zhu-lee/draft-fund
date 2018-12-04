@@ -20,6 +20,7 @@ public abstract class AbstractServer implements Server{
     public AbstractServer(ServerConfig serverConfig) {
         this.nettyServer = new NettyServer(serverConfig);
         this.serviceContainer = new ServiceContainer();
+        this.appExposeService();
     }
 
     @Override
@@ -44,5 +45,9 @@ public abstract class AbstractServer implements Server{
     @Override
     public void register() {
 
+    }
+
+    protected void appExposeService() {
+        //TODO 初始化暴露些系统服务
     }
 }

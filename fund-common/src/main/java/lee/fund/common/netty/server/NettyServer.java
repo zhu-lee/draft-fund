@@ -8,11 +8,17 @@ import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.util.concurrent.DefaultThreadFactory;
-import lee.fund.common.Server;
 import lee.fund.common.container.ServiceContainer;
 import lee.fund.util.remote.RemotingUtils;
+import lombok.Getter;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.time.LocalDateTime;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Author: zhu.li
@@ -24,17 +30,26 @@ public class NettyServer extends ServerBootstrap{
     private final Logger logger = LoggerFactory.getLogger(NettyServer.class);
     private NioEventLoopGroup serverBossGroup;
     private NioEventLoopGroup serverWorkerGroup;
+    @Getter
     private ServerConfig serverConfig;
+    @Getter
+    private LocalDateTime startTime;
+
+    @Setter
+    @Getter
     private ServiceContainer serviceContainer;
+    @Getter
+    private ThreadPoolExecutor poolExecutor;
 
     public NettyServer(ServerConfig serverConfig){
         this.serverConfig = serverConfig;
-        serverBossGroup = new NioEventLoopGroup(1, new DefaultThreadFactory("serverBossGroup"));
-        serverWorkerGroup = new NioEventLoopGroup(serverConfig.getWorkThreads(), new DefaultThreadFactory("serverWorkerGroup"));
+        this.serverBossGroup = new NioEventLoopGroup(1, new DefaultThreadFactory("serverBossGroup"));
+        this.serverWorkerGroup = new NioEventLoopGroup(serverConfig.getWorkThreads(), new DefaultThreadFactory("serverWorkerGroup"));
 
         this.group(serverBossGroup, serverWorkerGroup);
         this.channel(enableEpoll() ? EpollServerSocketChannel.class : NioServerSocketChannel.class);
         this.localAddress(serverConfig.getBindAddress());
+        //child
         this.childOption(ChannelOption.SO_KEEPALIVE, false);
         this.childOption(ChannelOption.SO_REUSEADDR, true);
         this.childOption(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT);
@@ -44,6 +59,14 @@ public class NettyServer extends ServerBootstrap{
         this.childOption(ChannelOption.SO_RCVBUF, serverConfig.getReceiveBufSize());
         this.childOption(ChannelOption.SO_SNDBUF, serverConfig.getSendBufSize());
         this.childHandler(new ServerChannelInitializer());
+
+        //init poolExecutor
+        this.initPoolExecutor();
+    }
+
+    private void initPoolExecutor() {
+        poolExecutor = new ThreadPoolExecutor(this.serverConfig.getWorkThreads(), this.serverConfig.getMaxThreads(), 60, TimeUnit.SECONDS, new SynchronousQueue<>());
+        poolExecutor.allowCoreThreadTimeOut(true);
     }
 
     private boolean enableEpoll(){
@@ -51,6 +74,7 @@ public class NettyServer extends ServerBootstrap{
     }
 
     public void start() {
+        this.startTime = LocalDateTime.now();
         this.bind().addListener(f->{
             if (f.isSuccess()) {
                 logger.info("server {} start success",serverConfig.getBindAddress());
@@ -67,9 +91,5 @@ public class NettyServer extends ServerBootstrap{
         } catch (Exception e) {
             logger.error("server shutdown error，",e);
         }
-    }
-
-    public void setServiceContainer(ServiceContainer serviceContainer) {
-        this.serviceContainer = serviceContainer;
     }
 }

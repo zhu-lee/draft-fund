@@ -21,7 +21,9 @@ public class ServerConfig {
     private int receiveBufSize = 64 * 1024;
     private int linger = 5;
     private int maxConnections = 2000;
+    private int maxThreads = 2000;
     private int connectTimeout = 10 * 1000;
+    private int keepAliveTime = 30 * 60;//maxIdleTimeSeconds
 
     public ServerConfig(Configuration configuration) {
         this.bindAddress = new InetSocketAddress(configuration.getPort());

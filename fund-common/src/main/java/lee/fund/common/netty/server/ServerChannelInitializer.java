@@ -3,6 +3,9 @@ package lee.fund.common.netty.server;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
+import io.netty.handler.timeout.IdleStateHandler;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * Author: zhu.li
@@ -11,8 +14,30 @@ import io.netty.channel.ChannelPipeline;
  * Desc:
  */
 public class ServerChannelInitializer extends ChannelInitializer<Channel> {
+    private static SessionHandler sessionHandler = new SessionHandler();
+    private static ServerIdleHandler serverIdleHandler = new ServerIdleHandler();
+    private NettyServer server;
+    private ServerConfig config;
+
+    public ServerChannelInitializer(NettyServer server, ServerConfig config) {
+        this.server = server;
+        this.config = config;
+    }
+
     @Override
     protected void initChannel(Channel ch) throws Exception {
         ChannelPipeline pipeline = ch.pipeline();
+
+        // read
+        IdleStateHandler idleStateHandler = new IdleStateHandler(10, 0, 0, TimeUnit.SECONDS);
+//        pipeline.addLast("encode")
+//        pipeline.addLast("decode")
+        pipeline.addLast("idle_state", idleStateHandler);
+        pipeline.addLast("idle_process", serverIdleHandler);
+        pipeline.addFirst("session", sessionHandler);
+        pipeline.addLast("process",new ServerHandler());
+        System.out.println("1---" + Thread.currentThread().getName());
+
+
     }
 }
