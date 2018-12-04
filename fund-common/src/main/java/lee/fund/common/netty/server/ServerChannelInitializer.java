@@ -4,6 +4,8 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.timeout.IdleStateHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.TimeUnit;
 
@@ -14,6 +16,7 @@ import java.util.concurrent.TimeUnit;
  * Desc:
  */
 public class ServerChannelInitializer extends ChannelInitializer<Channel> {
+    private final Logger logger = LoggerFactory.getLogger(ServerChannelInitializer.class);
     private static SessionHandler sessionHandler = new SessionHandler();
     private static ServerIdleHandler serverIdleHandler = new ServerIdleHandler();
     private NettyServer server;
@@ -29,7 +32,7 @@ public class ServerChannelInitializer extends ChannelInitializer<Channel> {
         ChannelPipeline pipeline = ch.pipeline();
 
         // read
-        IdleStateHandler idleStateHandler = new IdleStateHandler(10, 0, 0, TimeUnit.SECONDS);
+        IdleStateHandler idleStateHandler = new IdleStateHandler(this.config.getKeepAliveTime(), 0, 0, TimeUnit.SECONDS);
 //        pipeline.addLast("encode")
 //        pipeline.addLast("decode")
         pipeline.addLast("idle_state", idleStateHandler);
