@@ -25,16 +25,18 @@ public abstract class AbstractServer implements Server{
 
     @Override
     public void start() {
-        nettyServer.start();
+        this.nettyServer.start();
+        this.register();
     }
 
     @Override
     public void shutdown() {
-        nettyServer.shutdown();
+        this.nettyServer.shutdown();
     }
 
     @Override
     public void exposeService(Class<?> clazz, Object instance) {
+        //TODO 校验
 //        if (RpcClient.isProxy(instance)) {
 //            throw new RuntimeException(String.format("can't register a proxy object as service [%s], this will cause dead circulation", clazz.getName()));
 //        }
@@ -44,7 +46,7 @@ public abstract class AbstractServer implements Server{
 
     @Override
     public void register() {
-
+        //TODO 注册
     }
 
     protected void appExposeService() {

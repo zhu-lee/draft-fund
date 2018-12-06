@@ -5,7 +5,9 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import lee.fund.util.convert.DateConverter;
 import lee.fund.util.remote.RemotingUtils;
+import lombok.RequiredArgsConstructor;
 
+import java.beans.ConstructorProperties;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -38,6 +40,7 @@ public class HttpMonitor {
     }
 
     public void initMonitor() {
+        //TODO register
         this.register("/$st", new SimpleHandler(e -> String.format("start time: %s, process: %s", DateConverter.toString(this.startTime), RemotingUtils.getPid())));
 //        this.register("/$dep", new SimpleHandler(e -> Dependency.print()));
 //        this.register("/metrics", new MetricHandler(CollectorRegistry.defaultRegistry));
@@ -66,7 +69,7 @@ public class HttpMonitor {
         }
     }
 
-    static class SimpleHandler implements HttpHandler{
+    private static class SimpleHandler implements HttpHandler{
         Function<HttpExchange, String> render;
         public SimpleHandler(Function<HttpExchange, String> render) {
             this.render = render;
@@ -84,14 +87,11 @@ public class HttpMonitor {
         }
     }
 
-    static class InnerThreadFactory implements ThreadFactory{
+    @RequiredArgsConstructor
+    private static class InnerThreadFactory implements ThreadFactory{
         private AtomicInteger threadIndex = new AtomicInteger(0);
-        private String name;
-        private boolean daemon;
-        public InnerThreadFactory(String name,boolean daemon) {
-            this.name = name;
-            this.daemon = daemon;
-        }
+        private final String name;
+        private final boolean daemon;
 
         @Override
         public Thread newThread(Runnable r) {

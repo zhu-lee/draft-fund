@@ -15,10 +15,18 @@ import java.util.List;
 @Service
 public class ExampleServiceImpl implements ExampleService{
     @Override
-    public List<String> queryList(int id) {
+    public List<String> queryList(int id, String name) {
         return new ArrayList<String>() {{
-            add("aa");
-            add("bb");
+            add("id");
+            add("name");
+        }};
+    }
+
+    @Override
+    public List<Integer> getList(int id, Integer code) {
+        return new ArrayList<Integer>() {{
+            add(1);
+            add(2);
         }};
     }
 }

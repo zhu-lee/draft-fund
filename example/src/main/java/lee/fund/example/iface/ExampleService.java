@@ -9,5 +9,7 @@ import java.util.List;
  * Desc:
  */
 public interface ExampleService {
-    List<String> queryList(int id);
+    List<String> queryList(int id, String name);
+
+    List<Integer> getList(int id, Integer code);
 }

@@ -23,7 +23,7 @@ public class MethodExecutor {
         return access.invoke(obj, index, args);
     }
 
-//    public Class[] getParameterTypes() {
-//        return access.getParameterTypes()[index];
-//    }
+    public Class[] getParameterTypes() {
+        return access.getParameterTypes()[index];
+    }
 }

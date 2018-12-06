@@ -60,4 +60,8 @@ public class ServiceContainer {
     private String buildKey(String serviceName, String methodName) {
         return Joiner.on(".").join(serviceName, methodName);
     }
+
+    public MethodExecutor getExecutor(String service, String method) {
+        return executorMap.get(buildKey(service, method));
+    }
 }

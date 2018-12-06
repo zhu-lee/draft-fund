@@ -17,10 +17,9 @@ import java.util.concurrent.TimeUnit;
  */
 public class ServerChannelInitializer extends ChannelInitializer<Channel> {
     private final Logger logger = LoggerFactory.getLogger(ServerChannelInitializer.class);
-    private static SessionHandler sessionHandler = new SessionHandler();
     private static ServerIdleHandler serverIdleHandler = new ServerIdleHandler();
-    private NettyServer server;
-    private ServerConfig config;
+    private final NettyServer server;
+    private final ServerConfig config;
 
     public ServerChannelInitializer(NettyServer server, ServerConfig config) {
         this.server = server;
@@ -29,18 +28,19 @@ public class ServerChannelInitializer extends ChannelInitializer<Channel> {
 
     @Override
     protected void initChannel(Channel ch) throws Exception {
+        SessionHandler siHandler = this.server.getSessionHandler();
+        if (siHandler.getChannelGroup().size() >= this.config.getMaxConnections()) {
+            logger.info("reach the max connections{}, close the connection", this.config.getMaxConnections());
+            ch.close();
+            return;
+        }
+
         ChannelPipeline pipeline = ch.pipeline();
-
-        // read
-        IdleStateHandler idleStateHandler = new IdleStateHandler(this.config.getKeepAliveTime(), 0, 0, TimeUnit.SECONDS);
-//        pipeline.addLast("encode")
-//        pipeline.addLast("decode")
-        pipeline.addLast("idle_state", idleStateHandler);
+        pipeline.addLast("encode", new ServerEncoder());//write
+        pipeline.addLast("idle_state", new IdleStateHandler(this.config.getKeepAliveTime(), 0, 0, TimeUnit.SECONDS));
         pipeline.addLast("idle_process", serverIdleHandler);
-        pipeline.addFirst("session", sessionHandler);
-        pipeline.addLast("process",new ServerHandler());
-        System.out.println("1---" + Thread.currentThread().getName());
-
-
+        pipeline.addLast("session", server.getSessionHandler());
+        pipeline.addLast("decode", new ServerDecoder());
+        pipeline.addLast("process", new ServerHandler(this.server));
     }
 }

@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -30,17 +31,21 @@ public class Configuration {
     private boolean monitorEnabled;
     private int monitorPort;
 
+
+
     public Configuration(){
         loadConfiguration();
     }
 
     private void loadConfiguration(){
-        String fileName = "remote.server.xml";
+        String fileName = "server-config.xml";
         String filePath = ConfigUtils.searchConfig(fileName);
         if (filePath == null) {
             logger.error("config > not found {}",fileName);
             System.exit(1);
         }
+
+        List<Map<String, String>> xmlMapList = XmlUtils.parseXml2MapList(filePath);
 
         logger.info("config > found {}",filePath);
         Map<String, String> xmlMap = XmlUtils.parseXml2Map(filePath);

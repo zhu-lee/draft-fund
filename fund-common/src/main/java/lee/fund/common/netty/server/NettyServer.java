@@ -40,6 +40,8 @@ public class NettyServer extends ServerBootstrap{
     private ServiceContainer serviceContainer;
     @Getter
     private ThreadPoolExecutor poolExecutor;
+    @Getter
+    private SessionHandler sessionHandler = new SessionHandler();
 
     public NettyServer(ServerConfig serverConfig){
         this.serverConfig = serverConfig;

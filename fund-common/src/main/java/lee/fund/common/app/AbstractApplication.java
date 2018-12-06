@@ -32,6 +32,7 @@ public abstract class AbstractApplication {
         this.args = args;
         this.configuration = configuration;
         this.logger = LoggerFactory.getLogger(bootStrap);
+        //TODO 加载(如果有spring.xml)  spring.config.location这个关键字指定配置文件的路径 spring.config.name”等于{application}参数加载配置文件
     }
 
     public void run(){
@@ -57,6 +58,6 @@ public abstract class AbstractApplication {
     }
 
     protected void setMonitor(HttpMonitor monitor) {
-
+        //TODO custom monitor
     }
 }

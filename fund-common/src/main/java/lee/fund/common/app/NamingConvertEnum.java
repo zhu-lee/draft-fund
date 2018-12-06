@@ -2,9 +2,6 @@ package lee.fund.common.app;
 
 import java.util.Objects;
 
-/**
- * Created by noname on 15/12/6.
- */
 public enum NamingConvertEnum {
     CAMEL("camel"), PASCAL("pascal");
 

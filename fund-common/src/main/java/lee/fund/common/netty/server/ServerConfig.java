@@ -23,9 +23,11 @@ public class ServerConfig {
     private int maxConnections = 2000;
     private int maxThreads = 2000;
     private int connectTimeout = 10 * 1000;
-    private int keepAliveTime = 30 * 60;//maxIdleTimeSeconds
+    private int keepAliveTime = 30 * 60;//idle time
 
     public ServerConfig(Configuration configuration) {
         this.bindAddress = new InetSocketAddress(configuration.getPort());
+        //TODO empty check
+        this.maxConnections = configuration.getConnections();
     }
 }
