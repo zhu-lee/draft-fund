@@ -9,7 +9,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import lee.fund.common.container.ServiceContainer;
-import lee.fund.util.remote.RemotingUtils;
+import lee.fund.util.sys.SysUtils;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
@@ -72,7 +72,7 @@ public class NettyServer extends ServerBootstrap{
     }
 
     private boolean enableEpoll(){
-        return Epoll.isAvailable() && RemotingUtils.isLinuxOS();
+        return Epoll.isAvailable() && SysUtils.isLinuxOS();
     }
 
     public void start() {

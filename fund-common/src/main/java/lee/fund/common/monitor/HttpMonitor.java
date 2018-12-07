@@ -4,10 +4,9 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import lee.fund.util.convert.DateConverter;
-import lee.fund.util.remote.RemotingUtils;
+import lee.fund.util.sys.SysUtils;
 import lombok.RequiredArgsConstructor;
 
-import java.beans.ConstructorProperties;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -31,17 +30,17 @@ public class HttpMonitor {
     private final LocalDateTime startTime = LocalDateTime.now();
     private final int nThread = 10;
 
-    public HttpMonitor(InetSocketAddress address,boolean daemon) throws IOException {
+    public HttpMonitor(InetSocketAddress address, boolean daemon) throws IOException {
         this.httpServer = HttpServer.create(address, nThread);
         this.daemon = daemon;
-        this.executorService = Executors.newFixedThreadPool(5, new InnerThreadFactory("HttpMonitor",daemon));
+        this.executorService = Executors.newFixedThreadPool(5, new InnerThreadFactory("HttpMonitor", daemon));
         this.httpServer.setExecutor(executorService);
         initMonitor();
     }
 
     public void initMonitor() {
         //TODO register
-        this.register("/$st", new SimpleHandler(e -> String.format("start time: %s, process: %s", DateConverter.toString(this.startTime), RemotingUtils.getPid())));
+        this.register("/$st", new SimpleHandler(e -> String.format("start time: %s, process: %s", DateConverter.toString(this.startTime), SysUtils.getPid())));
 //        this.register("/$dep", new SimpleHandler(e -> Dependency.print()));
 //        this.register("/metrics", new MetricHandler(CollectorRegistry.defaultRegistry));
     }
@@ -69,8 +68,9 @@ public class HttpMonitor {
         }
     }
 
-    private static class SimpleHandler implements HttpHandler{
+    private static class SimpleHandler implements HttpHandler {
         Function<HttpExchange, String> render;
+
         public SimpleHandler(Function<HttpExchange, String> render) {
             this.render = render;
         }
@@ -88,14 +88,14 @@ public class HttpMonitor {
     }
 
     @RequiredArgsConstructor
-    private static class InnerThreadFactory implements ThreadFactory{
+    private static class InnerThreadFactory implements ThreadFactory {
         private AtomicInteger threadIndex = new AtomicInteger(0);
         private final String name;
         private final boolean daemon;
 
         @Override
         public Thread newThread(Runnable r) {
-            Thread t = new Thread(r, String.format("%s_%s",name,threadIndex.incrementAndGet()));
+            Thread t = new Thread(r, String.format("%s_%s", name, threadIndex.incrementAndGet()));
             t.setDaemon(daemon);
             return t;
         }

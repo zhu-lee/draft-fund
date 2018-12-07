@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <servers>
-    <server>
-        <server name="fund-example" port="9268" desc="fund-example服务">
-            <option name="connections" vlue="2000"/>
-            <option name="debug" vlue="true"/>
-            <option name="monitor_enabled" vlue="true"/>
-            <option name="monitor_port" vlue="19628"/>
-        </server>
+    <server name="fund-example" port="9268" desc="fund-example服务">
+        <option name="connections" vlue="2000"/>
+        <option name="debug" vlue="true"/>
+        <option name="monitor_enabled" vlue="true"/>
+        <option name="monitor_port" vlue="19628"/>
+    </server>
+    <server name="fund-example" port="9268" desc="fund-example服务">
+        <option name="connections" vlue="2000"/>
+        <option name="debug" vlue="true"/>
+        <option name="monitor_enabled" vlue="true"/>
+        <option name="monitor_port" vlue="19628"/>
     </server>
 </servers>

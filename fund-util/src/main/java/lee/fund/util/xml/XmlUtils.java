@@ -1,14 +1,12 @@
 package lee.fund.util.xml;
 
+import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -18,57 +16,74 @@ import java.util.stream.Collectors;
  * Desc:
  */
 public class XmlUtils {
-    private XmlUtils(){}
-
-    public static Map<String, String> parseXml2Map(String filePath){
-        SAXReader reader = new SAXReader();
-        Map<String, String> xmlMap;
-        try {
-            Document document = reader.read(new File(filePath));
-            Element element = document.getRootElement();
-            xmlMap=(Map<String, String>)element.elements().stream().collect(Collectors.toMap(t -> ((Element) t).getName(), t -> ((Element) t).getText()));
-        }catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        return xmlMap;
+    private XmlUtils() {
     }
 
-    public static List<Map<String, String>> parseXml2MapList(String filePath){
+    public static Map<String, Object> parseMap(String filePath) {
         SAXReader reader = new SAXReader();
-        List<Map<String, String>> xmlMapList = new ArrayList<>();
+        Map<String, Object> rootMap = null;
+        try {
+            Document document = reader.read(new File(filePath));
+            Element el = document.getRootElement();
+            if (el.elements().size() > 0) {
+                rootMap = (Map<String, Object>) el.elements().stream().collect(Collectors.toMap(t -> ((Element) t).attribute(0).getValue(), t -> ((Element) t).attribute(1).getValue()));
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return rootMap;
+    }
+
+    public static Map<String, Object> parseMultiMap(String filePath) {
+        SAXReader reader = new SAXReader();
+        Map<String, Object> rootMap = null;
         try {
             Document document = reader.read(new File(filePath));
             Element element = document.getRootElement();
-            for(Iterator it = element.elementIterator(); it.hasNext();) {
-                Element el = (Element) it.next();
-                Map<String, String> xmlMap=(Map<String, String>)el.elements().stream().collect(Collectors.toMap(t -> ((Element) t).getName(), t -> ((Element) t).getText()));
-                if (!xmlMap.isEmpty()) {
-                    xmlMapList.add(xmlMap);
+            int i = 1;
+            if (element.elements().size() > 0) {
+                rootMap = new HashMap<>();
+                for (Iterator it = element.elementIterator(); it.hasNext(); ) {
+                    Element el = (Element) it.next();
+                    Map<String, Object> elMap = (Map<String, Object>) el.attributes().stream().collect(Collectors.toMap(t -> ((Attribute) t).getName(), t -> ((Attribute) t).getValue()));
+                    Map<String, Object> iteMap = (Map<String, Object>) el.elements().stream().collect(Collectors.toMap(t -> ((Element) t).attribute(0).getValue(), t -> ((Element) t).attribute(1).getValue()));
+                    if (elMap.size() > 0) {
+                        if (iteMap.size() > 0) {
+                            elMap.put("option", iteMap);
+                        }
+                    } else if (iteMap.size() > 0) {
+                        elMap = iteMap;
+                    }
+                    if (rootMap.containsKey(el.getName())) {
+                        rootMap.put(el.getName() + (i++), elMap);
+                    } else {
+                        rootMap.put(el.getName(), elMap);
+                    }
                 }
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        return xmlMapList;
+        return rootMap;
     }
 
-    public static String getXmlString(Map<String,String> xmlMap,String key) {
+    public static String getXmlString(Map<String, String> xmlMap, String key) {
         if (xmlMap.containsKey(key)) {
             return xmlMap.get(key).toString();
         }
         return null;
     }
 
-    public static Integer getXmlInt(Map<String,String> map,String key) {
+    public static Integer getXmlInt(Map<String, String> map, String key) {
         if (map.containsKey(key)) {
             return Integer.parseInt(map.get(key).toString());
         }
         return null;
     }
 
-    public static Boolean getXmlBoolean(Map<String,String> map,String key) {
+    public static Boolean getXmlBoolean(Map<String, String> map, String key) {
         if (map.containsKey(key)) {
-            return Boolean.parseBoolean (map.get(key).toString());
+            return Boolean.parseBoolean(map.get(key).toString());
         }
         return null;
     }

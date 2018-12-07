@@ -2,6 +2,7 @@ package lee.fund.util.config;
 
 import com.google.common.base.Strings;
 import lee.fund.util.log.ConsoleLogger;
+import lee.fund.util.sys.SysUtils;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -16,10 +17,12 @@ import java.net.URLDecoder;
  */
 public class ConfigUtils {
     private static String etcFolder;
+    private static String globalFolder;
 
-    private ConfigUtils() {}
+    private ConfigUtils() {
+    }
 
-    public static String searchConfig(String fileName){
+    public static String searchConf(String fileName) {
         String filePath = getEtcFolder() + fileName;
         if (new File(filePath).exists()) {
             return filePath;
@@ -27,7 +30,15 @@ public class ConfigUtils {
         return null;
     }
 
-    public static String getEtcFolder() {
+    public static String searchGlobalConf(String fileName) {
+        String filePath = getGlobalConfigDir() + fileName;
+        if (new File(filePath).exists()) {
+            return filePath;
+        }
+        return null;
+    }
+
+    private static String getEtcFolder() {
         if (Strings.isNullOrEmpty(etcFolder)) {
             URL etcUrl = Thread.currentThread().getContextClassLoader().getResource("etc");
             if (etcUrl == null) {
@@ -36,11 +47,26 @@ public class ConfigUtils {
             }
             try {
                 etcFolder = URLDecoder.decode(etcUrl.getPath(), "UTF-8") + "/";
-                ConsoleLogger.info("config > etc folder found: %s",etcFolder);
+                ConsoleLogger.info("config > etc folder found: %s", etcFolder);
             } catch (UnsupportedEncodingException e) {
                 throw new RuntimeException(e);
             }
         }
         return etcFolder;
+    }
+
+    private static String getGlobalConfigDir() {
+        if (globalFolder == null) {
+            if (SysUtils.isLinuxOS()) {
+                globalFolder = "/home/fund/etc/";
+            } else if (SysUtils.isWindowOS()) {
+                globalFolder = "D:\\etc\\";
+            } else if (SysUtils.isMacOS()) {
+                globalFolder = "/etc/fund/";
+            } else {
+                throw new IllegalStateException("unsupported os: " + SysUtils.OS_NAME);
+            }
+        }
+        return globalFolder;
     }
 }

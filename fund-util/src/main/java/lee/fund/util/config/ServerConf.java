@@ -3,7 +3,9 @@ package lee.fund.util.config;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.logging.log4j.util.Strings;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -15,15 +17,20 @@ import java.util.Map;
 @Setter
 @Getter
 public class ServerConf {
-    private String name;
-    private int port;
-    private String desc;
+    private String name = Strings.EMPTY;
+    private Integer port;
+    private String desc = Strings.EMPTY;
     private Option option;
     private Map<String, Object> customs;
 
+    public ServerConf() {
+        this.option = new Option();
+        this.customs = new HashMap<>();
+    }
+
     @Setter
     @Getter
-    private static class Option {
+    public static class Option {
         private int connections;
         private boolean debug;
         private boolean monitorEnabled;

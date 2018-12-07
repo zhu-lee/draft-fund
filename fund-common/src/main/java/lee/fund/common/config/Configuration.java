@@ -1,16 +1,14 @@
 package lee.fund.common.config;
 
-import lee.fund.common.util.ConfigUtils;
-import lee.fund.util.xml.XmlUtils;
+import com.google.common.base.Strings;
+import lee.fund.util.config.AppConf;
+import lee.fund.util.config.ServerConf;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * Author: zhu.li
@@ -31,61 +29,25 @@ public class Configuration {
     private boolean monitorEnabled;
     private int monitorPort;
 
-
-
-    public Configuration(){
-        loadConfiguration();
+    public Configuration() {
+        this.loadConfiguration();
     }
 
-    private void loadConfiguration(){
-        String fileName = "server-config.xml";
-        String filePath = ConfigUtils.searchConfig(fileName);
-        if (filePath == null) {
-            logger.error("config > not found {}",fileName);
-            System.exit(1);
-        }
+    private void loadConfiguration() {
+        ServerConf serConf = AppConf.instance().getSerConf();
+        requireNonNull(serConf.getName(),"server name is empty");
+        this.setName(serConf.getName());
+        requireNonNull(serConf.getPort(), "server port is empty");
+        this.setPort(serConf.getPort());
 
-        List<Map<String, String>> xmlMapList = XmlUtils.parseXml2MapList(filePath);
-
-        logger.info("config > found {}",filePath);
-        Map<String, String> xmlMap = XmlUtils.parseXml2Map(filePath);
-        logger.info("config > {}={}",fileName, xmlMap);
-        if (xmlMap.isEmpty()) {
-            logger.error("config > parse {} failed",fileName);
-            System.exit(1);
-        }
-
-        String name = XmlUtils.getXmlString(xmlMap, "name");
-        requireNonNull(name, "name", fileName);
-        this.setName(name);
-
-        Integer port = XmlUtils.getXmlInt(xmlMap, "port");
-        requireNonNull(port, "port", fileName);
-        this.setPort(port);
-
-        Boolean registry = XmlUtils.getXmlBoolean(xmlMap, "registry");
-        requireNonNull(registry, "registry", fileName);
-        this.setRegistry(registry);
-
-        Integer connections = XmlUtils.getXmlInt(xmlMap, "connections");
-        requireNonNull(connections, "connections", fileName);
-        this.setConnections(connections);
-
-        String desc = XmlUtils.getXmlString(xmlMap, "desc");
-        requireNonNull(desc, "desc", fileName);
-        this.setDesc(desc);
-
-        Optional<Boolean> debugOptional = Optional.ofNullable(XmlUtils.getXmlBoolean(xmlMap, "debug"));
-        debugOptional.ifPresent(o->this.setDebug(o));
-
-        Optional<Boolean> monitorEnabledOptional = Optional.ofNullable(XmlUtils.getXmlBoolean(xmlMap, "monitor_enabled"));
-        monitorEnabledOptional.ifPresent(o->this.setMonitorEnabled(o));
-
-        Optional<Integer> monitorPortOptional = Optional.ofNullable(XmlUtils.getXmlInt(xmlMap, "monitor_port"));
-        monitorPortOptional.ifPresent(o -> this.setMonitorPort(o));
+        this.setDesc(Strings.isNullOrEmpty(serConf.getDesc())?serConf.getName():serConf.getDesc());
+        this.setConnections(serConf.getOption().getConnections());
+        this.setDebug(serConf.getOption().isDebug());
+        this.setMonitorEnabled(serConf.getOption().isMonitorEnabled());
+        this.setMonitorPort(serConf.getOption().getMonitorPort());
     }
 
-    private void requireNonNull(Object va,String filed,String fileName) {
-        Objects.requireNonNull(va, String.format("config > %s->%s",fileName,filed));
+    private void requireNonNull(Object va, String str) {
+        Objects.requireNonNull(va, String.format("config > %s", str));
     }
 }
