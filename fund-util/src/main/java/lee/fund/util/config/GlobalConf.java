@@ -1,5 +1,6 @@
 package lee.fund.util.config;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,7 +10,7 @@ import lombok.Setter;
  * Date:   Created in 2018/12/6 15:48
  * Desc:
  */
-@Setter
+@Setter(AccessLevel.PROTECTED)
 @Getter
 public class GlobalConf {
     private String etcdAdress;

@@ -15,7 +15,6 @@ import java.util.Optional;
  * Date:   Created in 2018/12/6 15:16
  * Desc:
  */
-@Setter
 @Getter
 public class AppConf {
     private ServerConf serConf;

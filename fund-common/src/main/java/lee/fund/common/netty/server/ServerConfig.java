@@ -25,9 +25,9 @@ public class ServerConfig {
     private int connectTimeout = 10 * 1000;
     private int keepAliveTime = 30 * 60;//idle time
 
-    public ServerConfig(Configuration configuration) {
-        this.bindAddress = new InetSocketAddress(configuration.getPort());
+    public ServerConfig(Configuration cfg) {
+        this.bindAddress = new InetSocketAddress(cfg.getPort());
         //TODO empty check
-        this.maxConnections = configuration.getConnections();
+        this.maxConnections = cfg.getConnections() > 0 ? cfg.getConnections() : this.maxConnections;
     }
 }

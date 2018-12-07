@@ -1,6 +1,7 @@
 package lee.fund.util.config;
 
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.logging.log4j.util.Strings;
@@ -14,7 +15,7 @@ import java.util.Map;
  * Date:   Created in 2018/12/6 15:47
  * Desc:
  */
-@Setter
+@Setter(AccessLevel.PROTECTED)
 @Getter
 public class ServerConf {
     private String name = Strings.EMPTY;
@@ -28,7 +29,7 @@ public class ServerConf {
         this.customs = new HashMap<>();
     }
 
-    @Setter
+    @Setter(AccessLevel.PROTECTED)
     @Getter
     public static class Option {
         private int connections;

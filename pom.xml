@@ -36,6 +36,7 @@
     <spring.version>5.1.2.RELEASE</spring.version>
     <spring.boot.version>2.1.0.RELEASE</spring.boot.version>
     <reflectasm.version>1.11.0</reflectasm.version>
+    <jetcd-core.version>0.0.2</jetcd-core.version>
   </properties>
   <!--依赖管理-->
   <dependencyManagement>
@@ -125,6 +126,11 @@
         <groupId>com.esotericsoftware</groupId>
         <artifactId>reflectasm</artifactId>
         <version>${reflectasm.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.coreos</groupId>
+        <artifactId>jetcd-core</artifactId>
+        <version>${jetcd-core.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

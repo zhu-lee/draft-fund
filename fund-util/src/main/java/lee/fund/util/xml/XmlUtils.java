@@ -6,7 +6,9 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
 import java.io.File;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -65,26 +67,5 @@ public class XmlUtils {
             throw new RuntimeException(e);
         }
         return rootMap;
-    }
-
-    public static String getXmlString(Map<String, String> xmlMap, String key) {
-        if (xmlMap.containsKey(key)) {
-            return xmlMap.get(key).toString();
-        }
-        return null;
-    }
-
-    public static Integer getXmlInt(Map<String, String> map, String key) {
-        if (map.containsKey(key)) {
-            return Integer.parseInt(map.get(key).toString());
-        }
-        return null;
-    }
-
-    public static Boolean getXmlBoolean(Map<String, String> map, String key) {
-        if (map.containsKey(key)) {
-            return Boolean.parseBoolean(map.get(key).toString());
-        }
-        return null;
     }
 }
