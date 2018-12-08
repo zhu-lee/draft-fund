@@ -35,7 +35,7 @@ public class ResponseMessage {
         message.setServerTime(System.currentTimeMillis());
         message.setSuccess(true);
         //TODO SimpleEncoder
-        message.setResult(SimpleEncoder.encode(result));
+//        message.setResult(SimpleEncoder.encode(result));
         return message;
     }
 

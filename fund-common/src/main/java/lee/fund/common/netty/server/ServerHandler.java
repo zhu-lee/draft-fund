@@ -95,7 +95,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<RequestMessage> {
             for (int i = 0; i < args.length; i++) {
                 SimpleValue value = values.get(i);
                 //TODO 实现decode
-                args[i] = SimpleEncoder.decode(value.getDataType(), value.getData(), types[i]);
+//                args[i] = SimpleEncoder.decode(value.getDataType(), value.getData(), types[i]);
             }
             return args;
         }

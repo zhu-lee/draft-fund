@@ -4,6 +4,7 @@ import com.coreos.jetcd.Client;
 import com.coreos.jetcd.KV;
 import com.coreos.jetcd.Lease;
 import com.coreos.jetcd.data.ByteSequence;
+import com.coreos.jetcd.data.KeyValue;
 import com.coreos.jetcd.options.PutOption;
 import com.google.common.base.Strings;
 import lee.fund.util.lang.UncheckedException;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Author: zhu.li
@@ -26,6 +28,7 @@ public class JetcdUtils {
     private static KV kvClient;
     private static Lease leaseClient;
     private static long leaseId;
+    private static final int TTL = 30;
 
     static {
         loadJetcd();
@@ -44,7 +47,7 @@ public class JetcdUtils {
                 client = Client.builder().endpoints(Arrays.asList(etcdAdress.split(","))).build();
                 kvClient = client.getKVClient();
                 leaseClient = client.getLeaseClient();
-                leaseId = client.getLeaseClient().grant(5).get().getID();
+                leaseId = client.getLeaseClient().grant(5).get(TTL, TimeUnit.SECONDS).getID();
                 keepAlive();
             } catch (Exception e) {
                 throw new UncheckedException(e);
@@ -54,7 +57,7 @@ public class JetcdUtils {
     }
 
     public static Client getClient() {
-//        loadJetcd(); TODO 需不需要，测试下etcd挂了情况
+//        loadJetcd(); TODO 测试下etcd挂了能否连上，再启动了能否连上
         return client;
     }
 
@@ -78,16 +81,15 @@ public class JetcdUtils {
     }
 
     public static String getNode(String key){
-        try
-        getKvClient().get(ByteSequence.fromString(key)).get().getKvs();
-//        List<KeyValue> kvs = EtcdUtil.getEtclClient().getKVClient().get(ByteSequence.fromString(key)).get().getKvs();
-        if(kvs.size()>0){
-            String value = kvs.get(0).getValue().toStringUtf8();
-            return value;
+        try {
+            List<KeyValue> kvs = getKvClient().get(ByteSequence.fromString(key)).get().getKvs();
+            if(kvs.size()>0){
+                return kvs.get(0).getValue().toStringUtf8();
+            }
+        } catch (Exception e) {
+            throw new UncheckedException(e);
         }
-        else {
-            return null;
-        }
+        return null;
     }
 
     private static void keepAlive() {

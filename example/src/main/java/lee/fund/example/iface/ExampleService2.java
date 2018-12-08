@@ -8,8 +8,8 @@ import java.util.List;
  * Date:   Created in 2018/12/4 14:36
  * Desc:
  */
-public interface ExampleService {
-    List<String> queryList(int id, String name);
+public interface ExampleService2 {
+    List<String> queryOrderList(int id, String name);
 
-    List<Integer> getPerson(int id, Integer code);
+    List<Integer> getOrder(int id, Integer code);
 }

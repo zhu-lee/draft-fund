@@ -1,6 +1,6 @@
 package lee.fund.example.impl;
 
-import lee.fund.example.iface.ExampleService;
+import lee.fund.example.iface.ExampleService2;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -13,9 +13,9 @@ import java.util.List;
  * Desc:
  */
 @Service
-public class ExampleServiceImpl implements ExampleService{
+public class ExampleServiceImpl2 implements ExampleService2 {
     @Override
-    public List<String> queryList(int id, String name) {
+    public List<String> queryOrderList(int id, String name) {
         return new ArrayList<String>() {{
             add("id");
             add("name");
@@ -23,7 +23,7 @@ public class ExampleServiceImpl implements ExampleService{
     }
 
     @Override
-    public List<Integer> getPerson(int id, Integer code) {
+    public List<Integer> getOrder(int id, Integer code) {
         return new ArrayList<Integer>() {{
             add(1);
             add(2);
