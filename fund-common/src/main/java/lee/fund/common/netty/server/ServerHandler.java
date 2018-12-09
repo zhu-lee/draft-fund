@@ -38,7 +38,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<RequestMessage> {
 
         this.setChannelState(ctx, requestMessage);
         try {
-            this.server.getPoolExecutor().execute(()-> new InnerTask(requestMessage,ctx.channel(),this.server.getServiceContainer()));
+            this.server.getThreadPool().execute(()-> new InnerTask(requestMessage,ctx.channel(),this.server.getServiceContainer()));
         } catch (RejectedExecutionException e) {
             ResponseMessage responseMessage = ResponseMessage.failed(RpcError.SERVER_BUSY);
             ctx.writeAndFlush(responseMessage);

@@ -37,6 +37,10 @@
     <spring.boot.version>2.1.0.RELEASE</spring.boot.version>
     <reflectasm.version>1.11.0</reflectasm.version>
     <jetcd-core.version>0.0.2</jetcd-core.version>
+    <io.grpc.version>1.17.0</io.grpc.version>
+    <io.opencensus.version>0.18.0</io.opencensus.version>
+    <google.protobuf.version>3.6.1</google.protobuf.version>
+    <fastjson.version>1.2.47</fastjson.version>
   </properties>
   <!--依赖管理-->
   <dependencyManagement>
@@ -131,6 +135,11 @@
         <groupId>com.coreos</groupId>
         <artifactId>jetcd-core</artifactId>
         <version>${jetcd-core.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.alibaba</groupId>
+        <artifactId>fastjson</artifactId>
+        <version>${fastjson.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

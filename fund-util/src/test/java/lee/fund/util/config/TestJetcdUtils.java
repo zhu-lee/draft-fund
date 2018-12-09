@@ -4,6 +4,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+
 /**
  * Author: zhu.li
  * Since:  jdk 1.8
@@ -14,9 +16,11 @@ public class TestJetcdUtils {
     private final Logger logger = LoggerFactory.getLogger(TestJetcdUtils.class);
 
     @Test
-    public void testAction() {
-        JetcdUtils.getClient();
+    public void testAction() throws Exception {
+//        JetcdUtils.getClient();
+        JetcdUtils.setNodeWithLease("lizhu","dddddd");
         logger.info("连接成功...");
-
+//        Thread.currentThread().sleep(20000);
+        System.in.read();
     }
 }

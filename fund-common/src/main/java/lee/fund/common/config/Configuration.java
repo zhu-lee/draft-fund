@@ -2,7 +2,9 @@ package lee.fund.common.config;
 
 import com.google.common.base.Strings;
 import lee.fund.util.config.AppConf;
+import lee.fund.util.config.GlobalConf;
 import lee.fund.util.config.ServerConf;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
@@ -16,7 +18,7 @@ import java.util.Objects;
  * Date:   Created in 2018/11/25 20:21
  * Desc:
  */
-@Setter
+@Setter(AccessLevel.PROTECTED)
 @Getter
 public class Configuration {
     private final Logger logger = LoggerFactory.getLogger(Configuration.class);
@@ -28,6 +30,7 @@ public class Configuration {
     private boolean debug;
     private boolean monitorEnabled;
     private int monitorPort;
+    private String registerIp;
 
     public Configuration() {
         this.loadConfiguration();
@@ -35,10 +38,16 @@ public class Configuration {
 
     private void loadConfiguration() {
         ServerConf serConf = AppConf.instance().getSerConf();
+        GlobalConf glabConf = AppConf.instance().getGlabConf();
+
         requireNonNull(serConf.getName(),"server name is empty");
         this.setName(serConf.getName());
         requireNonNull(serConf.getPort(), "server port is empty");
         this.setPort(serConf.getPort());
+        requireNonNull(glabConf.getRpcRegisterIp(), "register ip is empty");
+        this.setRegisterIp(glabConf.getRpcRegisterIp());
+
+        this.setRegistry(glabConf.isRpcRegisterEnabled());
 
         this.setDesc(Strings.isNullOrEmpty(serConf.getDesc())?serConf.getName():serConf.getDesc());
         this.setConnections(serConf.getOption().getConnections());

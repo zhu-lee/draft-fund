@@ -2,7 +2,6 @@ package lee.fund.remoting.application;
 
 import lee.fund.common.app.AbstractServer;
 import lee.fund.common.config.Configuration;
-import lee.fund.common.netty.server.ServerConfig;
 
 
 /**
@@ -14,6 +13,6 @@ import lee.fund.common.netty.server.ServerConfig;
 public class RpcServer extends AbstractServer{
 
     public RpcServer(Configuration configuration){
-        super(new ServerConfig(configuration));
+        super(configuration);
     }
 }

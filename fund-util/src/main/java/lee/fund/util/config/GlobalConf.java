@@ -14,11 +14,11 @@ import lombok.Setter;
 @Getter
 public class GlobalConf {
     private String etcdAdress;
-    private String logPath;
-    private RtType rpcRegisterType;
+    private String logPath;//TODO unused
+    private RtType rpcRegisterType;//TODO unused
     private boolean rpcRegisterEnabled;
     private String rpcRegisterIp;
-    private boolean rpcDiscoveryEnabled;
+    private boolean rpcDiscoveryEnabled;//TODO unused
     enum RtType{
         ETCD;
     }

@@ -39,7 +39,7 @@ public class NettyServer extends ServerBootstrap{
     @Getter
     private ServiceContainer serviceContainer;
     @Getter
-    private ThreadPoolExecutor poolExecutor;
+    private ThreadPoolExecutor threadPool;
     @Getter
     private SessionHandler sessionHandler = new SessionHandler();
 
@@ -67,8 +67,8 @@ public class NettyServer extends ServerBootstrap{
     }
 
     private void initPoolExecutor() {
-        poolExecutor = new ThreadPoolExecutor(this.serverConfig.getWorkThreads(), this.serverConfig.getMaxThreads(), 60, TimeUnit.SECONDS, new SynchronousQueue<>());
-        poolExecutor.allowCoreThreadTimeOut(true);
+        threadPool = new ThreadPoolExecutor(this.serverConfig.getWorkThreads(), this.serverConfig.getMaxThreads(), 60, TimeUnit.SECONDS, new SynchronousQueue<>());
+        threadPool.allowCoreThreadTimeOut(true);
     }
 
     private boolean enableEpoll(){

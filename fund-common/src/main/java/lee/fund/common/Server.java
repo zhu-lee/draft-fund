@@ -14,4 +14,6 @@ public interface Server {
     void exposeService(Class<?> clazz, Object instance);
 
     void register();
+
+    Object getData(String key);
 }

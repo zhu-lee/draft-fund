@@ -3,14 +3,19 @@ package lee.fund.util.config;
 import com.coreos.jetcd.Client;
 import com.coreos.jetcd.KV;
 import com.coreos.jetcd.Lease;
+import com.coreos.jetcd.Watch;
 import com.coreos.jetcd.data.ByteSequence;
 import com.coreos.jetcd.data.KeyValue;
+import com.coreos.jetcd.options.DeleteOption;
+import com.coreos.jetcd.options.GetOption;
 import com.coreos.jetcd.options.PutOption;
+import com.coreos.jetcd.options.WatchOption;
 import com.google.common.base.Strings;
 import lee.fund.util.lang.UncheckedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -28,7 +33,7 @@ public class JetcdUtils {
     private static KV kvClient;
     private static Lease leaseClient;
     private static long leaseId;
-    private static final int TTL = 30;
+    private static final int TTL = 15;
 
     static {
         loadJetcd();
@@ -47,7 +52,7 @@ public class JetcdUtils {
                 client = Client.builder().endpoints(Arrays.asList(etcdAdress.split(","))).build();
                 kvClient = client.getKVClient();
                 leaseClient = client.getLeaseClient();
-                leaseId = client.getLeaseClient().grant(5).get(TTL, TimeUnit.SECONDS).getID();
+                leaseId = client.getLeaseClient().grant(TTL).get(TTL, TimeUnit.SECONDS).getID();
                 keepAlive();
             } catch (Exception e) {
                 throw new UncheckedException(e);
@@ -57,48 +62,93 @@ public class JetcdUtils {
     }
 
     public static Client getClient() {
-//        loadJetcd(); TODO 测试下etcd挂了能否连上，再启动了能否连上
         return client;
-    }
-
-    private static KV getKvClient() {
-        return kvClient;
-    }
-
-    private static Lease getLeaseClient() {
-        return leaseClient;
     }
 
     public static void setNode(String key, String value) {
         try {
-            ByteSequence bsKey = ByteSequence.fromString(key);
-            ByteSequence bsVa = ByteSequence.fromString(value);
-            getKvClient().put(bsKey, bsVa, PutOption.newBuilder().withLeaseId(leaseId).withPrevKV().build()).get();
-            getKvClient().txn();
+            kvClient.put(ByteSequence.fromString(key), ByteSequence.fromString(value)).get();
         } catch (Exception e) {
             throw new UncheckedException(e);
         }
     }
 
-    public static String getNode(String key){
+    public static void setNodeWithLease(String key, String value) {
         try {
-            List<KeyValue> kvs = getKvClient().get(ByteSequence.fromString(key)).get().getKvs();
-            if(kvs.size()>0){
-                return kvs.get(0).getValue().toStringUtf8();
-            }
+            ByteSequence bsKey = ByteSequence.fromString(key);
+            ByteSequence bsVa = ByteSequence.fromString(value);
+            kvClient.put(bsKey, bsVa, PutOption.newBuilder().withLeaseId(leaseId).withPrevKV().build()).get();
         } catch (Exception e) {
             throw new UncheckedException(e);
         }
-        return null;
+    }
+
+    public static List<KeyValue> getNodes(String key) {
+        List<KeyValue> keyValues;
+        try {
+            keyValues = kvClient.get(ByteSequence.fromString(key)).get().getKvs();
+        } catch (Exception e) {
+            throw new UncheckedException(e);
+        }
+        return keyValues;
+    }
+
+    public static List<KeyValue> getNodesWithPrefix(String prefix) {
+        List<KeyValue> keyValues = new ArrayList<>();
+        try {
+            GetOption getOption = GetOption.newBuilder().withPrefix(ByteSequence.fromString(prefix)).build();
+            keyValues = kvClient.get(ByteSequence.fromString(prefix), getOption).get().getKvs();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return keyValues;
+    }
+
+    public static void delNode(String key) {
+        try {
+            kvClient.delete(ByteSequence.fromString(key)).get().getDeleted();
+        } catch (Exception e) {
+            throw new UncheckedException(e);
+        }
+    }
+
+    public static void delNodesWithPrefix(String prefix) {
+        try {
+            DeleteOption deleteOption = DeleteOption.newBuilder().withPrefix(ByteSequence.fromString(prefix)).build();
+            kvClient.delete(ByteSequence.fromString(prefix), deleteOption);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static Watch.Watcher getWatcher(String key) {
+        Watch.Watcher watcher;
+        try {
+            watcher = client.getWatchClient().watch(ByteSequence.fromString(key));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return watcher;
+    }
+
+    public static Watch.Watcher getWatcherWithPrefix(String prefix) {
+        Watch.Watcher watcher;
+        try {
+            WatchOption watchOption = WatchOption.newBuilder().withPrefix(ByteSequence.fromString(prefix)).build();
+            watcher = client.getWatchClient().watch(ByteSequence.fromString(prefix), watchOption);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return watcher;
     }
 
     private static void keepAlive() {
-        Executors.newSingleThreadExecutor().execute(
+        Executors.newSingleThreadExecutor(r -> new Thread(r, "keep_alive_lease")).execute(
                 () -> {
                     try {
-                        Lease.KeepAliveListener listener = getLeaseClient().keepAlive(leaseId);
+                        Lease.KeepAliveListener listener = leaseClient.keepAlive(leaseId);
                         listener.listen();
-                        logger.info("keepAlive leaseClient:{}, format:" + Long.toHexString(leaseId));
+                        logger.info("keepAlive lease, format leaseId{}", Long.toHexString(leaseId));
                     } catch (Exception e) {
                         logger.error(e.getMessage(), e);
                     }
