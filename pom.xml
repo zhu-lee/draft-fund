@@ -13,7 +13,7 @@
     <module>fund-util</module>
     <module>fund-task</module>
     <module>fund-mq</module>
-    <module>fund-common</module>
+    <module>fund-app</module>
     <module>fund-serialize</module>
     <module>example</module>
   </modules>
@@ -67,7 +67,7 @@
       </dependency>
       <dependency>
         <groupId>lee.fund</groupId>
-        <artifactId>fund-common</artifactId>
+        <artifactId>fund-app</artifactId>
         <version>${fund.version}</version>
       </dependency>
       <dependency>

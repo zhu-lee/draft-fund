@@ -9,25 +9,27 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>example</artifactId>
+    <artifactId>fund-app</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>lee.fund</groupId>
-            <artifactId>fund-app</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-autoconfigure</artifactId>
-            <version>${spring.boot.version}</version>
+            <artifactId>fund-remote</artifactId>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
-    </dependencies>
 
-    <build>
-    </build>
+    </dependencies>
+    <!--<build>
+        <testResources>
+            <testResource>
+                <directory>
+                    ${project.basedir}/src/main/resources
+                </directory>
+            </testResource>
+        </testResources>
+    </build>-->
 </project>
