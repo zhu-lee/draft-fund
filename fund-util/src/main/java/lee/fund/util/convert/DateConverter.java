@@ -11,10 +11,6 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.TimeZone;
 
-
-/**
- * Created by guohua.cui on 15/4/30.
- */
 public final class DateConverter {
     private static DateTimeFormatter DEFAULT_NEW_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private static final FastDateFormat DEFAULT_OLD_FORMATTER = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss");

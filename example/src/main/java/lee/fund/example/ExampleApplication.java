@@ -1,7 +1,7 @@
 package lee.fund.example;
 
 import lee.fund.common.config.Configuration;
-import lee.fund.remoting.application.RpcApplication;
+import lee.fund.remote.application.RemoteApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
@@ -14,7 +14,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class ExampleApplication {
     public static void main(String[] args) {
         Configuration configuration=new Configuration();
-        RpcApplication app = new RpcApplication(ExampleApplication.class, configuration, args);
+        RemoteApplication app = new RemoteApplication(ExampleApplication.class, configuration, args);
         app.run();
     }
 }

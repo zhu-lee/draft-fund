@@ -143,16 +143,14 @@ public class JetcdUtils {
     }
 
     private static void keepAlive() {
-        Executors.newSingleThreadExecutor(r -> new Thread(r, "keep_alive_lease")).execute(
-                () -> {
-                    try {
-                        Lease.KeepAliveListener listener = leaseClient.keepAlive(leaseId);
-                        listener.listen();
-                        logger.info("keepAlive lease, format leaseId{}", Long.toHexString(leaseId));
-                    } catch (Exception e) {
-                        logger.error(e.getMessage(), e);
-                    }
-                }
-        );
+        Executors.newSingleThreadExecutor(r -> new Thread(r, "KeepAlive_lease")).execute(() -> {
+            try {
+                Lease.KeepAliveListener listener = leaseClient.keepAlive(leaseId);
+                listener.listen();
+                logger.info("keepAlive lease, format leaseId{}", Long.toHexString(leaseId));
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            }
+        });
     }
 }

@@ -9,7 +9,7 @@
 
   <!--子模块-->
   <modules>
-    <module>fund-remoting</module>
+    <module>fund-remote</module>
     <module>fund-util</module>
     <module>fund-task</module>
     <module>fund-mq</module>
@@ -47,7 +47,7 @@
     <dependencies>
       <dependency>
         <groupId>lee.fund</groupId>
-        <artifactId>fund-remoting</artifactId>
+        <artifactId>fund-remote</artifactId>
         <version>${fund.version}</version>
       </dependency>
       <dependency>
