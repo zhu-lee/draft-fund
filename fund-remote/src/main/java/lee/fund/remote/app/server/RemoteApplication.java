@@ -1,6 +1,5 @@
-package lee.fund.remote.app;
+package lee.fund.remote.app.server;
 
-import lee.fund.remote.config.Configuration;
 import lee.fund.remote.monitor.HttpMonitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,9 +22,9 @@ public abstract class RemoteApplication {
     protected ApplicationContext springContext;
     protected LocalDateTime startTime;
     protected String[] args;
-    protected Configuration configuration;
+    protected ServerConfiguration configuration;
 
-    public RemoteApplication(Class<?> bootStrap, String[] args, Configuration configuration) {
+    public RemoteApplication(Class<?> bootStrap, String[] args, ServerConfiguration configuration) {
         this.springApp = new SpringApplication(bootStrap);
         this.bootStrap = bootStrap;
         this.args = args;

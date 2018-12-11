@@ -7,6 +7,9 @@ import java.lang.annotation.*;
 @Inherited
 @Documented
 public @interface RpcParameter {
-    String name() default "";//方法参数或返回值名称
-    String description() default "";//方法参数或返回值描述
+    //方法参数或返回值名称
+    String name() default "";
+
+    //方法参数或返回值描述
+    String description() default "";
 }

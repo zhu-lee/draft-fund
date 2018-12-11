@@ -1,8 +1,8 @@
 package lee.fund.app;
 
 
-import lee.fund.remote.app.RemoteApplication;
-import lee.fund.remote.config.Configuration;
+import lee.fund.remote.app.server.RemoteApplication;
+import lee.fund.remote.app.server.ServerConfiguration;
 import lee.fund.util.lang.ClassesUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +20,7 @@ public class Application extends RemoteApplication {
     private final Logger logger = LoggerFactory.getLogger(ClassesUtils.class);
     private AppServer rpcServer;
 
-    public Application(Class<?> bootStrap, Configuration configuration, String[] args) {
+    public Application(Class<?> bootStrap, ServerConfiguration configuration, String[] args) {
         super(bootStrap, args, configuration);
         this.rpcServer = new AppServer(configuration);
     }

@@ -6,6 +6,7 @@ import lee.fund.remote.annotation.RpcService;
 import lee.fund.remote.app.NamingConvertEnum;
 import lee.fund.remote.util.MethodUtils;
 import lee.fund.util.lang.StrKit;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +27,7 @@ public class ServiceContainer {
 
     public void storeService(Class<?> clazz, Object instance) {
         Optional<RpcService> rpcSrOptional = Optional.ofNullable(clazz.getAnnotation(RpcService.class));
-        String description = rpcSrOptional.map(o -> o.description()).orElse(Strings.EMPTY);
+        String description = rpcSrOptional.map(o -> o.description()).orElse(StringUtils.EMPTY);
         NamingConvertEnum convert = rpcSrOptional.map(o -> o.convention()).orElse(NamingConvertEnum.PASCAL);
         String name = rpcSrOptional.map(o -> o.name()).orElse(null);
         if (StrKit.isBlank(name)) {

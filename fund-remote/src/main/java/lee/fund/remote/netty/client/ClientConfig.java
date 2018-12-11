@@ -1,4 +1,4 @@
-package lee.fund.remoting.netty.client;
+package lee.fund.remote.netty.client;
 
 /**
  * Author: zhu.li

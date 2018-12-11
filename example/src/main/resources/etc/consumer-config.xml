@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <servers>
-    <server name="fund-example" port="9268" desc="fund-example服务">
-        <option name="connections" vlue="2000"/>
-        <option name="debug" vlue="true"/>
-        <option name="monitor_enabled" vlue="true"/>
-        <option name="monitor_port" vlue="19628"/>
+    <server name="fund-example" address=":9268" discovery="true" desc="第三方平台订单服务">
+        <option name="maxConnections" value="100"/>
+        <option name="maxRetry" value="3"/>
     </server>
-    <server name="fund-example" port="9268" desc="fund-example服务">
-        <option name="connections" vlue="2000"/>
-        <option name="debug" vlue="true"/>
-        <option name="monitor_enabled" vlue="true"/>
-        <option name="monitor_port" vlue="19628"/>
+    <server name="ecommerce" address=":15011" discovery="true" desc="地址服务">
+        <setting name="maxConnections" value="500"/>
+        <option name="maxRetry" value="3"/>
     </server>
 </servers>

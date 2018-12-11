@@ -4,17 +4,11 @@ import lee.fund.util.lang.EnumValueSupport;
 import lee.fund.util.lang.Enums;
 
 public enum	FailModeEnum implements EnumValueSupport {
-    /**
-     * unknown
-     */
+    //unknown
     UNKNOW(-1),
-    /**
-     * Failure to switch to another service
-     */
+    //Failure to switch to another service
     FailOver(1),
-    /**
-     * Return immediately after failure
-     */
+    //Return immediately after failure
     FailFast(2);
 
     private int value;

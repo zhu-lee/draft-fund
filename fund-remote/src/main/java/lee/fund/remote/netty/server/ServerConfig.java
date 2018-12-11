@@ -1,6 +1,6 @@
 package lee.fund.remote.netty.server;
 
-import lee.fund.remote.config.Configuration;
+import lee.fund.remote.app.server.ServerConfiguration;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,7 +25,7 @@ public class ServerConfig {
     private int connectTimeout = 10 * 1000;
     private int keepAliveTime = 30 * 60;//idle time
 
-    public ServerConfig(Configuration cfg) {
+    public ServerConfig(ServerConfiguration cfg) {
         this.bindAddress = new InetSocketAddress(cfg.getPort());
         //TODO empty check
         this.maxConnections = cfg.getConnections() > 0 ? cfg.getConnections() : this.maxConnections;

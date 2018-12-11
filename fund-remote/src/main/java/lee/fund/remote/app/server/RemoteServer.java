@@ -1,7 +1,6 @@
-package lee.fund.remote.app;
+package lee.fund.remote.app.server;
 
 import lee.fund.remote.Server;
-import lee.fund.remote.config.Configuration;
 import lee.fund.remote.container.ServiceContainer;
 import lee.fund.remote.netty.server.NettyServer;
 import lee.fund.remote.netty.server.ServerConfig;
@@ -21,9 +20,9 @@ public abstract class RemoteServer implements Server{
     private static final JetcdRegistry registry = JetcdRegistry.getInstance();
     private NettyServer server;
     private ServiceContainer serviceContainer;
-    private Configuration conf;
+    private ServerConfiguration conf;
 
-    public RemoteServer(Configuration conf) {
+    public RemoteServer(ServerConfiguration conf) {
         this.conf = conf;
         this.server = new NettyServer(new ServerConfig(conf));
         this.serviceContainer = new ServiceContainer();
@@ -76,7 +75,7 @@ public abstract class RemoteServer implements Server{
         }
     }
 
-    public Provider getProvider(Configuration conf) {
+    public Provider getProvider(ServerConfiguration conf) {
         Provider provider = new Provider();
         provider.setName(conf.getName());
         provider.setAddress(String.format("%s:%s", conf.getRegisterIp(), conf.getPort()));

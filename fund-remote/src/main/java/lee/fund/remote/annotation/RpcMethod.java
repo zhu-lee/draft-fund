@@ -9,21 +9,12 @@ import java.lang.annotation.*;
 @Inherited
 @Documented
 public @interface RpcMethod {
-    /**
-     * 方法名称
-     * @return
-     */
+    //方法名称
     String name() default "";
 
-    /**
-     * 方法描述
-     * @return
-     */
+    //方法描述
     String description() default "";
 
-    /**
-     * 失败处理模式
-     * @return
-     */
+    //失败处理模式
     FailModeEnum fail() default FailModeEnum.FailOver;
 }

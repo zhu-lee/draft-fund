@@ -1,5 +1,6 @@
 package lee.fund.util.sys;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 
 import java.lang.management.ManagementFactory;
@@ -38,7 +39,7 @@ public class SysUtils {
                     }
                 }
                 if (pid == null) {
-                    pid = Strings.EMPTY;
+                    pid = StringUtils.EMPTY;
                 }
             }
         }

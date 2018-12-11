@@ -1,6 +1,6 @@
 package lee.fund;
 
-import lee.fund.remote.config.Configuration;
+import lee.fund.remote.app.server.ServerConfiguration;
 import lee.fund.app.Application;
 import org.junit.Test;
 
@@ -14,7 +14,7 @@ public class RpcApplicationTest {
     @Test
     public void testRpcApplication() {
         //port range 1～65535
-        Configuration configuration = new Configuration();
+        ServerConfiguration configuration = new ServerConfiguration();
         Application rpcApplication = new Application(RpcApplicationTest.class, configuration, null);
         rpcApplication.run();
     }

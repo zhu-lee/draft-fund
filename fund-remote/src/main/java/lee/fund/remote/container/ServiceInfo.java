@@ -5,8 +5,10 @@ import lee.fund.remote.annotation.RpcParameter;
 import lee.fund.remote.app.NamingConvertEnum;
 import lee.fund.remote.util.MethodUtils;
 import lee.fund.util.lang.StrKit;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 
 import java.lang.reflect.Method;
@@ -19,7 +21,7 @@ import java.util.stream.Collectors;
  * Date:   Created in 2018/11/30 17:44
  * Desc:
  */
-@Setter
+@Setter(AccessLevel.PROTECTED)
 @Getter
 public class ServiceInfo {
     private String name;// 名称
@@ -34,7 +36,7 @@ public class ServiceInfo {
             Optional<RpcMethod> mdOptional = Optional.ofNullable(m.getAnnotation(RpcMethod.class));
             MethodInfo mi = new MethodInfo();
             mi.name = MethodUtils.getMethodName(m, convert, mdOptional);
-            mi.description = mdOptional.map(o->o.description()).orElse(Strings.EMPTY);
+            mi.description = mdOptional.map(o -> o.description()).orElse(StringUtils.EMPTY);
             mi.returnPiInfo = getReturn(m);
             mi.parameters = getParameters(m);
             this.methodMap.put(mi.name, mi);

@@ -1,4 +1,4 @@
-package lee.fund.remote.config;
+package lee.fund.remote.app.server;
 
 import com.google.common.base.Strings;
 import lee.fund.util.config.AppConf;
@@ -20,8 +20,8 @@ import java.util.Objects;
  */
 @Setter(AccessLevel.PROTECTED)
 @Getter
-public class Configuration {
-    private final Logger logger = LoggerFactory.getLogger(Configuration.class);
+public class ServerConfiguration {
+    private final Logger logger = LoggerFactory.getLogger(ServerConfiguration.class);
     private String name;
     private int port;
     private boolean registry;
@@ -32,11 +32,7 @@ public class Configuration {
     private int monitorPort;
     private String registerIp;
 
-    public Configuration() {
-        this.loadConfiguration();
-    }
-
-    private void loadConfiguration() {
+    public ServerConfiguration() {
         ServerConf serConf = AppConf.instance().getSerConf();
         GlobalConf glabConf = AppConf.instance().getGlabConf();
 
@@ -50,7 +46,9 @@ public class Configuration {
         this.setRegistry(glabConf.isRpcRegisterEnabled());
 
         this.setDesc(Strings.isNullOrEmpty(serConf.getDesc())?serConf.getName():serConf.getDesc());
-        this.setConnections(serConf.getOption().getConnections());
+        if (serConf.getOption().getConnections() > 0) {
+            this.setConnections(serConf.getOption().getConnections());
+        }
         this.setDebug(serConf.getOption().isDebug());
         this.setMonitorEnabled(serConf.getOption().isMonitorEnabled());
         this.setMonitorPort(serConf.getOption().getMonitorPort());

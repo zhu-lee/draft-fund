@@ -3,6 +3,7 @@ package lee.fund.util.config;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Author: zhu.li
@@ -13,13 +14,14 @@ import lombok.Setter;
 @Setter(AccessLevel.PROTECTED)
 @Getter
 public class GlobalConf {
-    private String etcdAdress;
-    private String logPath;//TODO unused
+    private String etcdAdress = StringUtils.EMPTY;
+    private String logPath = StringUtils.EMPTY;//TODO unused
     private RtType rpcRegisterType;//TODO unused
     private boolean rpcRegisterEnabled;
-    private String rpcRegisterIp;
+    private String rpcRegisterIp = StringUtils.EMPTY;
     private boolean rpcDiscoveryEnabled;//TODO unused
-    enum RtType{
+
+    enum RtType {
         ETCD;
     }
 }

@@ -10,8 +10,15 @@ import java.lang.annotation.*;
 @Inherited
 @Documented
 public @interface RpcService {
-    String name() default "";//服务名称
-    String description() default "";//服务描述
-    NamingConvertEnum convention() default NamingConvertEnum.PASCAL;//服务方法命名约定
-    FailModeEnum fail() default FailModeEnum.FailOver;//失败处理模式
+    //服务名称
+    String name() default "";
+
+    //服务描述
+    String description() default "";
+
+    //服务方法命名约定
+    NamingConvertEnum convention() default NamingConvertEnum.PASCAL;
+
+    //失败处理模式
+    FailModeEnum fail() default FailModeEnum.FailOver;
 }

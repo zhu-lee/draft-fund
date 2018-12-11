@@ -1,7 +1,7 @@
 package lee.fund.app;
 
-import lee.fund.remote.app.RemoteServer;
-import lee.fund.remote.config.Configuration;
+import lee.fund.remote.app.server.RemoteServer;
+import lee.fund.remote.app.server.ServerConfiguration;
 
 
 /**
@@ -12,7 +12,7 @@ import lee.fund.remote.config.Configuration;
  */
 public class AppServer extends RemoteServer {
 
-    public AppServer(Configuration configuration){
+    public AppServer(ServerConfiguration configuration){
         super(configuration);
     }
 }
