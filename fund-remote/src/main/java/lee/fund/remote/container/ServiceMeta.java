@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Author: zhu.li
@@ -15,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Desc:
  */
 public class ServiceMeta {
-    private static final ConcurrentHashMap<Class<?>, ServiceInfo> svcMetaMap = new ConcurrentHashMap<>();
+    private static final ConcurrentMap<Class<?>, ServiceInfo> svcMetaMap = new ConcurrentHashMap<>();
     private static ServiceMeta instance = new ServiceMeta();
     private ServiceMeta() {
     }

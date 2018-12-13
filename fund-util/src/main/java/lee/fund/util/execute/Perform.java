@@ -1,8 +1,7 @@
-package lee.fund.util.excute;
+package lee.fund.util.execute;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Author: zhu.li
@@ -11,8 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Desc:
  */
 public class Perform {
-    private static AtomicInteger threadIndex = new AtomicInteger(0);
-    private static ExecutorService executor = Executors.newFixedThreadPool(5,r -> new Thread(r, String.format("Perform_%s", threadIndex.incrementAndGet())));
+    private static ExecutorService executor = Executors.newFixedThreadPool(5, new NamedThreadFactory("Perform"));
 
     private Perform() {
     }

@@ -37,21 +37,21 @@ public class ServerConfiguration {
         GlobalConf glabConf = AppConf.instance().getGlabConf();
 
         requireNonNull(serConf.getName(),"server name is empty");
-        this.setName(serConf.getName());
+        this.name = serConf.getName();
         requireNonNull(serConf.getPort(), "server port is empty");
-        this.setPort(serConf.getPort());
+        this.port = serConf.getPort();
         requireNonNull(glabConf.getRpcRegisterIp(), "register ip is empty");
-        this.setRegisterIp(glabConf.getRpcRegisterIp());
+        this.registerIp = glabConf.getRpcRegisterIp();
 
-        this.setRegistry(glabConf.isRpcRegisterEnabled());
+        this.registry = glabConf.isRpcRegisterEnabled();
 
-        this.setDesc(Strings.isNullOrEmpty(serConf.getDesc())?serConf.getName():serConf.getDesc());
+        this.desc = Strings.isNullOrEmpty(serConf.getDesc()) ? serConf.getName() : serConf.getDesc();
         if (serConf.getOption().getConnections() > 0) {
-            this.setConnections(serConf.getOption().getConnections());
+            this.connections = serConf.getOption().getConnections();
         }
-        this.setDebug(serConf.getOption().isDebug());
-        this.setMonitorEnabled(serConf.getOption().isMonitorEnabled());
-        this.setMonitorPort(serConf.getOption().getMonitorPort());
+        this.debug = serConf.getOption().isDebug();
+        this.monitorEnabled = serConf.getOption().isMonitorEnabled();
+        this.monitorPort = serConf.getOption().getMonitorPort();
     }
 
     private void requireNonNull(Object va, String str) {

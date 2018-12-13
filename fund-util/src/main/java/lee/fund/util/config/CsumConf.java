@@ -21,12 +21,12 @@ public class CsumConf {
     private Option option;
 
     public CsumConf() {
-        this.option = new CsumConf.Option();
+        this.option = new Option();
     }
 
     @Setter(AccessLevel.PROTECTED)
     @Getter
-    public static class Option {
+    public class Option {
         private int maxConnections;
         private int maxRetry;
     }

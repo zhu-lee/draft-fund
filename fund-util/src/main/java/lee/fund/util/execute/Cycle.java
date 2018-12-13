@@ -1,9 +1,8 @@
-package lee.fund.util.excute;
+package lee.fund.util.execute;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Author: zhu.li
@@ -12,8 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Desc:
  */
 public class Cycle {
-    private static AtomicInteger threadIndex = new AtomicInteger(0);
-    private static ScheduledExecutorService executor = Executors.newScheduledThreadPool(5, r -> new Thread(r, String.format("Cycle_%s", threadIndex.incrementAndGet())));
+    private static ScheduledExecutorService executor = Executors.newScheduledThreadPool(5, new NamedThreadFactory("Cycle"));
 
     private Cycle() {
     }

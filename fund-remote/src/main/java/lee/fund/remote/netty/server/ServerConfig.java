@@ -12,7 +12,6 @@ import java.net.InetSocketAddress;
  * Date:   Created in 2018/11/23 17:22
  * Desc:
  */
-@Setter
 @Getter
 public class ServerConfig {
     private int workThreads = Runtime.getRuntime().availableProcessors() * 2;

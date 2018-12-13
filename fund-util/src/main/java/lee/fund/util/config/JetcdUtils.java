@@ -11,6 +11,7 @@ import com.coreos.jetcd.options.GetOption;
 import com.coreos.jetcd.options.PutOption;
 import com.coreos.jetcd.options.WatchOption;
 import com.google.common.base.Strings;
+import lee.fund.util.execute.NamedThreadFactory;
 import lee.fund.util.lang.UncheckedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -143,7 +144,7 @@ public class JetcdUtils {
     }
 
     private static void keepAlive() {
-        Executors.newSingleThreadExecutor(r -> new Thread(r, "KeepAlive_lease")).execute(() -> {
+        Executors.newSingleThreadExecutor(new NamedThreadFactory("KeepAlive")).execute(() -> {
             try {
                 Lease.KeepAliveListener listener = leaseClient.keepAlive(leaseId);
                 listener.listen();

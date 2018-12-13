@@ -9,7 +9,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.util.Strings;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -32,7 +31,7 @@ public class ServiceInfo {
         this.name = name;
         this.description = description;
         this.methodMap = new HashMap<>();
-        Arrays.stream(clazz.getMethods()).filter(m -> m.getDeclaringClass() != Object.class).forEach(m->{
+        Arrays.stream(clazz.getMethods()).filter(m -> m.getDeclaringClass() != Object.class).forEach(m -> {
             Optional<RpcMethod> mdOptional = Optional.ofNullable(m.getAnnotation(RpcMethod.class));
             MethodInfo mi = new MethodInfo();
             mi.name = MethodUtils.getMethodName(m, convert, mdOptional);
@@ -73,7 +72,7 @@ public class ServiceInfo {
 
     @Getter
     @Setter
-    public static class MethodInfo {
+    public class MethodInfo {
         private String name;// 名称
         private String description;// 描述
         private List<ParameterInfo> parameters;// 参数列表

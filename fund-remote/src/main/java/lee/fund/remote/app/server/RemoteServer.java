@@ -63,7 +63,7 @@ public abstract class RemoteServer implements Server{
     public Object getData(String key) {
         switch (key) {
             case "clients.active":
-                return this.server.getSessionHandler().getChannelGroup().size();
+                return this.server.getServerHandler().getChannelGroup().size();
             case "clients.maxConnections":
                 return this.server.getServerConfig().getMaxConnections();
             case "threads.active":

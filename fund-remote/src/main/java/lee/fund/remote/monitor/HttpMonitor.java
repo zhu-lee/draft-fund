@@ -4,6 +4,7 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import lee.fund.util.convert.DateConverter;
+import lee.fund.util.execute.NamedThreadFactory;
 import lee.fund.util.sys.SysUtils;
 import lombok.RequiredArgsConstructor;
 
@@ -33,7 +34,7 @@ public class HttpMonitor {
     public HttpMonitor(InetSocketAddress address, boolean daemon) throws IOException {
         this.httpServer = HttpServer.create(address, nThread);
         this.daemon = daemon;
-        this.executorService = Executors.newFixedThreadPool(5, new InnerThreadFactory("HttpMonitor", daemon));
+        this.executorService = Executors.newFixedThreadPool(5, new NamedThreadFactory("HttpMonitor", daemon));
         this.httpServer.setExecutor(executorService);
         initMonitor();
     }
@@ -54,7 +55,7 @@ public class HttpMonitor {
             this.httpServer.start();
         } else {
             FutureTask<Void> startTask = new FutureTask<>(this.httpServer::start, null);
-            new InnerThreadFactory("HTTPSever", daemon).newThread(startTask).start();
+            new NamedThreadFactory("HTTPSever", daemon).newThread(startTask).start();
             try {
                 startTask.get();
             } catch (ExecutionException e) {
@@ -84,20 +85,6 @@ public class HttpMonitor {
             out.write(bytes);
             out.flush();
             httpExchange.close();
-        }
-    }
-
-    @RequiredArgsConstructor
-    private static class InnerThreadFactory implements ThreadFactory {
-        private AtomicInteger threadIndex = new AtomicInteger(0);
-        private final String name;
-        private final boolean daemon;
-
-        @Override
-        public Thread newThread(Runnable r) {
-            Thread t = new Thread(r, String.format("%s_%s", name, threadIndex.incrementAndGet()));
-            t.setDaemon(daemon);
-            return t;
         }
     }
 }

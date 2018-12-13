@@ -3,6 +3,7 @@ package lee.fund.util.lang;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Author: zhu.li
@@ -11,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Desc:
  */
 public class Enums {
-    private final static Map<Class<?>, Map<Integer, Object>> caches = new ConcurrentHashMap<>();
+    private final static ConcurrentMap<Class<?>, Map<Integer, Object>> caches = new ConcurrentHashMap<>();
     /**
      * 根据指定的枚举值获取枚举实例
      *

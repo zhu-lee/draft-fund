@@ -27,22 +27,33 @@ public class ClientConfiguration {
 
     public ClientConfiguration(CsumConf csumConf) {
         requireNonNull(csumConf.getName(), "name");
-        this.setName(csumConf.getName());
+        this.name = csumConf.getName();
         requireNonNull(csumConf.getAddress(), "address");
-        this.setAddress(csumConf.getAddress());
+        this.address = csumConf.getAddress();
+        if (!this.address.contains(":")) {
+            throw new IllegalArgumentException("invalid net address in consumer config file: " + this.address);
+        }
 
-        this.setDiscovery(csumConf.isDiscovery());
-        this.setDesc(Strings.isNullOrEmpty(csumConf.getDesc())?csumConf.getName():csumConf.getDesc());
+        this.discovery = csumConf.isDiscovery();
+        this.desc = Strings.isNullOrEmpty(csumConf.getDesc()) ? csumConf.getName() : csumConf.getDesc();
         if (csumConf.getOption().getMaxConnections() > 0) {
-            this.setMaxRetry(csumConf.getOption().getMaxConnections());
+            this.maxConnections = csumConf.getOption().getMaxConnections();
         }
         if (csumConf.getOption().getMaxRetry() > 0) {
-            this.setMaxRetry(csumConf.getOption().getMaxRetry());
+            this.maxRetry = csumConf.getOption().getMaxRetry();
         }
     }
 
     public ClientConfiguration(Provider provider) {
+        this.name = provider.getName();
+        this.address = provider.getAddress();
+        this.desc = provider.getDesc();
+    }
 
+    public ClientConfiguration(ClientConfiguration clientConf, Provider provider) {
+        this(provider);
+        this.maxConnections = clientConf.getMaxConnections();
+        this.maxRetry = clientConf.getMaxRetry();
     }
 
     private void requireNonNull(Object va, String str) {

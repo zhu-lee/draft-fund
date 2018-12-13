@@ -5,14 +5,17 @@ import com.coreos.jetcd.Watch;
 import com.coreos.jetcd.data.KeyValue;
 import com.coreos.jetcd.watch.WatchEvent;
 import lee.fund.util.config.JetcdUtils;
-import lee.fund.util.excute.Cycle;
+import lee.fund.util.execute.Cycle;
+import lee.fund.util.execute.NamedThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.concurrent.Executors;
-import java.util.function.BiConsumer;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * Author: zhu.li
@@ -24,6 +27,7 @@ public class JetcdRegistry {
     private final Logger logger = LoggerFactory.getLogger(JetcdRegistry.class);
     private static JetcdRegistry instance = new JetcdRegistry();
     private final int TTL_SECONDS = 60;
+    private AtomicInteger threadIndex = new AtomicInteger(0);
 
     private JetcdRegistry() {
     }
@@ -33,6 +37,7 @@ public class JetcdRegistry {
     }
 
     public void register(Supplier<Provider> supplier) {
+        //TODO 这里用更新呢？无意义
         Cycle.set(() -> {
             Provider provider = supplier.get();
             if (provider == null) {
@@ -44,64 +49,86 @@ public class JetcdRegistry {
     }
 
     private void register(Provider provider) {
-        // 检查节点是否下线
         try {
-            String key = this.getOfflineNodePath(provider);
-            logger.info(key);
-            List<KeyValue> keyValues = JetcdUtils.getNodes(key);
+            String offlineNodePath = this.getOfflineNodePath(provider.getName(), provider.getAddress());
+            logger.info(offlineNodePath);
+            List<KeyValue> keyValues = JetcdUtils.getNodes(offlineNodePath);
             if (keyValues != null && !keyValues.isEmpty()) {
                 logger.info("register failed, node [{} - {}] is offline", provider.getName(), provider.getAddress());
                 return;
             }
+
+            String nodePath = this.getNodePath(provider.getName(), provider.getAddress());
+            logger.info(nodePath);
+            String value = JSON.toJSONString(provider);
+            JetcdUtils.setNodeWithLease(nodePath, value);
+            logger.info("register success: {}", value);
         } catch (Exception e) {
             logger.error("register failed", e);
             return;
         }
-
-        // 注册
-        try {
-            String key = this.getNodePath(provider.getName(), provider.getAddress());
-            logger.info(key);
-            String value = JSON.toJSONString(provider);
-            JetcdUtils.setNodeWithLease(key, value);
-            logger.info("register success: {}", value);
-        } catch (Exception e) {
-            logger.error("register failed", e);
-        }
     }
 
-    // 下线节点路径
-    private String getOfflineNodePath(Provider provider) {
-        return String.format("/service/%s/offlines/%s", provider.getName(), provider.getAddress());
+    public List<Provider> lookup(String name) {
+        String nodePath = this.getNodesPath(name);
+        List<KeyValue> keyValues = JetcdUtils.getNodesWithPrefix(nodePath);
+        List<Provider> providers = keyValues.stream().map(t -> {
+            Provider provider = JSON.parseObject(t.getValue().toStringUtf8(), Provider.class);
+            return provider;
+        }).collect(Collectors.toList());
+        return providers;
     }
 
-    // 服务节点路径
+    private String getOfflineNodePath(String name, String address) {
+        return String.format("/service/%s/offlines/%s", name, address);
+    }
+
+    /**
+     * 服务节点路径
+     *
+     * @param name
+     * @param address
+     * @return
+     */
     private String getNodePath(String name, String address) {
         return String.format("/service/%s/providers/%s", name, address);
     }
 
-    public void watchKey(String key, Boolean usePrefix, BiConsumer<String, List<WatchEvent>> callback) {
-        Executors.newSingleThreadExecutor(r -> new Thread(r, "Watch_Key")).execute(() -> {
+    /**
+     * 服务节点目录
+     *
+     * @param name
+     * @return
+     */
+    private String getNodesPath(String name) {
+        return String.format("/service/%s/providers", name);
+    }
+
+    public void watchKey(String key, Boolean usePrefix, Consumer<List<Provider>> callback) {
+        Executors.newSingleThreadExecutor(new NamedThreadFactory("WatchKey")).execute(() -> {
+            String nodePath = this.getNodesPath(key);
             try {
                 Watch.Watcher watcher;
                 if (usePrefix) {
-                    watcher = JetcdUtils.getWatcherWithPrefix(key);
+                    watcher = JetcdUtils.getWatcherWithPrefix(nodePath);
                 } else {
-                    watcher = JetcdUtils.getWatcher(key);
+                    watcher = JetcdUtils.getWatcher(nodePath);
                 }
                 List<WatchEvent> events = watcher.listen().getEvents();
-                callback.accept(key, events);
+                if (events == null || events.isEmpty()) {
+                    logger.error("watch etcd key={} error", key);
+                } else {
+                    //TODO 校地址变更 ，其实服务端不用将变更数据更新到etcd。服务端变更数据可单独拉接口
+                    List<Provider> providers = events.stream().map(t -> {
+                        Provider provider = JSON.parseObject(t.getKeyValue().getValue().toStringUtf8(), Provider.class);
+                        return provider;
+                    }).collect(Collectors.toList());
+                    callback.accept(providers);
+                    logger.info("providers of [{}] refreshed: {}", key, JSON.toJSONString(providers));
+                }
             } catch (Exception e) {
                 logger.error(String.format("Watch etcd key:{}，error", key), e);
             }
         });
-    }
-
-    public void updateProviders(String server, List<WatchEvent> events) {
-
-    }
-
-    public interface WatchCallback {
-        void callback(String server, List<WatchEvent> events);
     }
 }

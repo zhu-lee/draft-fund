@@ -31,7 +31,7 @@ public class ServerConf {
 
     @Setter(AccessLevel.PROTECTED)
     @Getter
-    public static class Option {
+    public class Option {
         private int connections;
         private boolean debug;
         private boolean monitorEnabled;
