@@ -26,7 +26,7 @@ public class ServiceMeta {
     }
 
     public ServiceInfo get(Class<?> clazz) {
-        if (!svcMetaMap.containsKey(clazz)) {
+        svcMetaMap.computeIfAbsent(clazz,k->{
             Optional<RpcService> rpcSrOptional = Optional.ofNullable(clazz.getAnnotation(RpcService.class));
             String description = rpcSrOptional.map(o -> o.description()).orElse(StringUtils.EMPTY);
             NamingConvertEnum convert = rpcSrOptional.map(o -> o.convention()).orElse(NamingConvertEnum.PASCAL);
@@ -34,8 +34,8 @@ public class ServiceMeta {
             if (StrKit.isBlank(name)) {
                 name = clazz.getSimpleName();
             }
-            svcMetaMap.put(clazz, new ServiceInfo(clazz, name, description, convert));
-        }
+            return new ServiceInfo(clazz, name, description, convert);
+        });
         return svcMetaMap.get(clazz);
     }
 }

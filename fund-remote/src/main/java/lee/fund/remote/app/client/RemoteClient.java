@@ -65,31 +65,44 @@ public final class RemoteClient {
             if (Object.class == method.getDeclaringClass()) {
                 return method.invoke(this, args);
             }
-            if (!methodMap.containsKey(method.getName())) {
+            ServiceInfo.MethodInfo methodInfo = methodMap.get(method.getName());
+            if (methodInfo==null) {
                 return method.invoke(this, args);
             }
-
-            return null;
+            return callExecutor.doInvoke(serviceName, method.getName(), args, method.getReturnType());
         }
     }
 
     private static class RemoteCallExecutor {
-        private static ConcurrentMap<String, RemoteCallExecutor> recMap = new ConcurrentHashMap<>();
-        private static JetcdRegistry jetcdRegistry = JetcdRegistry.getInstance();
+        private static final ConcurrentMap<String, RemoteCallExecutor> recMap = new ConcurrentHashMap<>();
+        private static final JetcdRegistry jetcdRegistry = JetcdRegistry.getInstance();
         private List<Invoker> invokers = new ArrayList<>();
-        private String server;
+        private final String server;
         private ClientConfiguration clientConf;
         private boolean obtainInvokers;
+        private final InvokerBalancer invokerBalancer;
 
         public RemoteCallExecutor(String server) {
             this.server = server;
             if (AppConf.instance().getCsumConfs().containsKey(server)) {
                 this.clientConf = new ClientConfiguration(AppConf.instance().getCsumConfs().get(server));
             }
+            this.invokerBalancer = InvokerBalancer.get(null);
         }
 
         public static RemoteCallExecutor get(String server) {
             return recMap.computeIfAbsent(server, RemoteCallExecutor::new);
+        }
+
+        public Object doInvoke(String service, String method, Object[] args, Class<?> returnType) {
+            List<Invoker> invokers = this.getInvokers();
+            Invoker invoker = this.invokerBalancer.select(invokers);
+            try {
+                return invoker.invoke(service, method, args, returnType);
+            } catch (Exception e) {
+
+            }
+
         }
 
         public List<Invoker> getInvokers() {
@@ -127,7 +140,6 @@ public final class RemoteClient {
         }
 
         private void genInvokers(List<Provider> providers) {
-            //TODO 地址过滤
             invokers = providers.stream().map(t -> {
                 ClientConfiguration clientConfiguration;
                 if (clientConf == null) {
