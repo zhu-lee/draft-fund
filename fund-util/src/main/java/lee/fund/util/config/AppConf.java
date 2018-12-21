@@ -17,9 +17,9 @@ import java.util.stream.Collectors;
  */
 @Getter
 public class AppConf {
-    private ServerConf serConf;
-    private GlobalConf glabConf;
-    private Map<String, CsumConf> csumConfs = new HashMap<>();
+    private ServerConf serverConf;
+    private GlobalConf globalConf;
+    private Map<String, ConSumerConf> conSumerConfs = new HashMap<>();
 
     private AppConf() {
         this.loadAppConf();
@@ -36,23 +36,23 @@ public class AppConf {
         }
         ConsoleLogger.info("config > found %s", filePath);
 
-        serConf = new ServerConf();
+        serverConf = new ServerConf();
         Map<String, Object> xmlMap = XmlUtils.parseMultiMap(filePath);
         Optional.ofNullable(xmlMap).ifPresent(t -> {
             Map<String, Object> serMap = (Map<String, Object>) t.get("server");
-            Optional.ofNullable(serMap.get("name")).ifPresent(o -> serConf.setName(o.toString()));
-            Optional.ofNullable(serMap.get("port")).ifPresent(o -> serConf.setPort(Integer.parseInt(o.toString())));
-            Optional.ofNullable(serMap.get("desc")).ifPresent(o -> serConf.setDesc(o.toString()));
+            Optional.ofNullable(serMap.get("name")).ifPresent(o -> serverConf.setName(o.toString()));
+            Optional.ofNullable(serMap.get("port")).ifPresent(o -> serverConf.setPort(Integer.parseInt(o.toString())));
+            Optional.ofNullable(serMap.get("desc")).ifPresent(o -> serverConf.setDesc(o.toString()));
 
             Optional.ofNullable(serMap.get("option")).ifPresent(s -> {
                 Map<String, Object> opMap = (Map<String, Object>) s;
-                Optional.ofNullable(opMap.get("connections")).ifPresent(o -> serConf.getOption().setConnections(Integer.parseInt(o.toString())));
-                Optional.ofNullable(opMap.get("debug")).ifPresent(o -> serConf.getOption().setDebug(Boolean.parseBoolean(o.toString())));
-                Optional.ofNullable(opMap.get("monitor_enabled")).ifPresent(o -> serConf.getOption().setMonitorEnabled(Boolean.parseBoolean(o.toString())));
-                Optional.ofNullable(opMap.get("monitor_port")).ifPresent(o -> serConf.getOption().setMonitorPort(Integer.parseInt(o.toString())));
+                Optional.ofNullable(opMap.get("connections")).ifPresent(o -> serverConf.getOption().setConnections(Integer.parseInt(o.toString())));
+                Optional.ofNullable(opMap.get("debug")).ifPresent(o -> serverConf.getOption().setDebug(Boolean.parseBoolean(o.toString())));
+                Optional.ofNullable(opMap.get("monitor_enabled")).ifPresent(o -> serverConf.getOption().setMonitorEnabled(Boolean.parseBoolean(o.toString())));
+                Optional.ofNullable(opMap.get("monitor_port")).ifPresent(o -> serverConf.getOption().setMonitorPort(Integer.parseInt(o.toString())));
             });
 
-            Optional.ofNullable(xmlMap.get("custom")).ifPresent(o -> serConf.setCustoms((Map<String, Object>) o));
+            Optional.ofNullable(xmlMap.get("custom")).ifPresent(o -> serverConf.setCustoms((Map<String, Object>) o));
         });
     }
 
@@ -65,15 +65,15 @@ public class AppConf {
         }
         ConsoleLogger.info("config > found %s", filePath);
 
-        glabConf = new GlobalConf();
+        globalConf = new GlobalConf();
         Map<String, Object> xmlMap = XmlUtils.parseMap(filePath);
         Optional.ofNullable(xmlMap).ifPresent(t -> {
-            Optional.ofNullable(t.get("etcd.address")).ifPresent(o -> glabConf.setEtcdAdress(o.toString()));
-            Optional.ofNullable(t.get("log.path")).ifPresent(o -> glabConf.setLogPath(o.toString()));
-            Optional.ofNullable(t.get("rpc.register.type")).ifPresent(o -> glabConf.setRpcRegisterType(GlobalConf.RtType.ETCD));
-            Optional.ofNullable(t.get("rpc.register.enabled")).ifPresent(o -> glabConf.setRpcRegisterEnabled(Boolean.parseBoolean(o.toString())));
-            Optional.ofNullable(t.get("rpc.register.ip")).ifPresent(o -> glabConf.setRpcRegisterIp(o.toString()));
-            Optional.ofNullable(t.get("rpc.discovery.enabled")).ifPresent(o -> glabConf.setRpcDiscoveryEnabled(Boolean.parseBoolean(o.toString())));
+            Optional.ofNullable(t.get("etcd.address")).ifPresent(o -> globalConf.setEtcdAdress(o.toString()));
+            Optional.ofNullable(t.get("log.path")).ifPresent(o -> globalConf.setLogPath(o.toString()));
+            Optional.ofNullable(t.get("rpc.register.type")).ifPresent(o -> globalConf.setRpcRegisterType(GlobalConf.RtType.ETCD));
+            Optional.ofNullable(t.get("rpc.register.enabled")).ifPresent(o -> globalConf.setRpcRegisterEnabled(Boolean.parseBoolean(o.toString())));
+            Optional.ofNullable(t.get("rpc.register.ip")).ifPresent(o -> globalConf.setRpcRegisterIp(o.toString()));
+            Optional.ofNullable(t.get("rpc.discovery.enabled")).ifPresent(o -> globalConf.setRpcDiscoveryEnabled(Boolean.parseBoolean(o.toString())));
         });
     }
 
@@ -88,9 +88,9 @@ public class AppConf {
         ConsoleLogger.info("config > found %s", filePath);
         Map<String, Object> xmlMap = XmlUtils.parseMultiMap(filePath);
         Optional.ofNullable(xmlMap).ifPresent(t ->
-                csumConfs = t.entrySet().stream().map(e -> {
+                conSumerConfs = t.entrySet().stream().map(e -> {
                     Map<String, Object> serMap = (Map<String, Object>) e.getValue();
-                    CsumConf csumConf = new CsumConf();
+                    ConSumerConf csumConf = new ConSumerConf();
                     Optional.ofNullable(serMap.get("name")).ifPresent(o -> csumConf.setName(o.toString()));
                     Optional.ofNullable(serMap.get("address")).ifPresent(o -> csumConf.setAddress(o.toString()));
                     Optional.ofNullable(serMap.get("discovery")).ifPresent(o -> csumConf.setDiscovery(Boolean.parseBoolean(o.toString())));
@@ -102,7 +102,7 @@ public class AppConf {
                         Optional.ofNullable(opMap.get("maxRetry")).ifPresent(o -> csumConf.getOption().setMaxRetry(Integer.parseInt(o.toString())));
                     });
                     return csumConf;
-                }).collect(Collectors.toMap(m -> ((CsumConf) m).getName(), m -> (CsumConf) m))
+                }).collect(Collectors.toMap(m -> ((ConSumerConf) m).getName(), m -> (ConSumerConf) m))
         );
     }
 

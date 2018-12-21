@@ -45,7 +45,7 @@ public class JetcdUtils {
 
     private static void loadJetcd() {
         if (kvClient == null) {
-            String etcdAdress = AppConf.instance().getGlabConf().getEtcdAdress();
+            String etcdAdress = AppConf.instance().getGlobalConf().getEtcdAdress();
             if (Strings.isNullOrEmpty(etcdAdress)) {
                 throw new UncheckedException("etcd.address can't be null or empty");
             }

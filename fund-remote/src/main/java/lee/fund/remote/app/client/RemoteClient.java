@@ -1,5 +1,6 @@
 package lee.fund.remote.app.client;
 
+import lee.fund.remote.app.FailModeEnum;
 import lee.fund.remote.container.ServiceInfo;
 import lee.fund.remote.container.ServiceMeta;
 import lee.fund.remote.exception.RpcError;
@@ -9,6 +10,7 @@ import lee.fund.remote.netty.client.RemoteInvokerFactory;
 import lee.fund.remote.registry.JetcdRegistry;
 import lee.fund.remote.registry.Provider;
 import lee.fund.util.config.AppConf;
+import lee.fund.util.lang.FaultException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,12 +37,7 @@ public final class RemoteClient {
     public static <T> T get(String server, Class<T> clazz) {
         ServiceInfo serviceInfo = ServiceMeta.instance().get(clazz);
         String key = String.format("%s.%s", server, serviceInfo.getName());
-        if (remoteProxyMap.containsKey(key)) {
-            return (T) remoteProxyMap.get(clazz);
-        }
-        RemoteProxy remoteProxy = new RemoteProxy(RemoteCallExecutor.get(server), clazz, serviceInfo).instance();
-        remoteProxyMap.put(key, remoteProxy);
-        return (T) remoteProxy;
+        return (T) remoteProxyMap.computeIfAbsent(key, k -> new RemoteProxy(RemoteCallExecutor.get(server), clazz, serviceInfo).instance());
     }
 
     private static class RemoteProxy implements InvocationHandler {
@@ -69,7 +66,7 @@ public final class RemoteClient {
             if (methodInfo==null) {
                 return method.invoke(this, args);
             }
-            return callExecutor.doInvoke(serviceName, method.getName(), args, method.getReturnType());
+            return callExecutor.doInvoke(serviceName, methodInfo, args, method.getReturnType());
         }
     }
 
@@ -81,11 +78,13 @@ public final class RemoteClient {
         private ClientConfiguration clientConf;
         private boolean obtainInvokers;
         private final InvokerBalancer invokerBalancer;
+        private int maxRetry = 2;
 
         public RemoteCallExecutor(String server) {
             this.server = server;
-            if (AppConf.instance().getCsumConfs().containsKey(server)) {
-                this.clientConf = new ClientConfiguration(AppConf.instance().getCsumConfs().get(server));
+            if (AppConf.instance().getConSumerConfs().containsKey(server)) {
+                this.clientConf = new ClientConfiguration(AppConf.instance().getConSumerConfs().get(server));
+                this.maxRetry = this.clientConf.getMaxRetry()==0?1:this.clientConf.getMaxRetry();
             }
             this.invokerBalancer = InvokerBalancer.get(null);
         }
@@ -94,15 +93,22 @@ public final class RemoteClient {
             return recMap.computeIfAbsent(server, RemoteCallExecutor::new);
         }
 
-        public Object doInvoke(String service, String method, Object[] args, Class<?> returnType) {
+        public Object doInvoke(String serviceName, ServiceInfo.MethodInfo methodInfo, Object[] args, Class<?> returnType) {
             List<Invoker> invokers = this.getInvokers();
-            Invoker invoker = this.invokerBalancer.select(invokers);
-            try {
-                return invoker.invoke(service, method, args, returnType);
-            } catch (Exception e) {
-
+            List<FaultException> faults = new ArrayList<>();
+            for(int i=0;i<maxRetry;i++) {
+                Invoker invoker = this.invokerBalancer.select(invokers);
+                try {
+                    return invoker.invoke(serviceName, methodInfo.getName(), args, returnType);
+                } catch (FaultException e) {
+                    if (methodInfo.getFailMode() == FailModeEnum.FailFast || invokers.size() == 1 || this.maxRetry == 1) {
+                        throw e;
+                    }
+                    //TODO 应用异常处理
+                    faults.add(e);
+                }
             }
-
+            return faults;
         }
 
         public List<Invoker> getInvokers() {

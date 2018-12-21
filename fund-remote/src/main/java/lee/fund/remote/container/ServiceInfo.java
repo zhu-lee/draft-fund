@@ -2,6 +2,7 @@ package lee.fund.remote.container;
 
 import lee.fund.remote.annotation.RpcMethod;
 import lee.fund.remote.annotation.RpcParameter;
+import lee.fund.remote.app.FailModeEnum;
 import lee.fund.remote.app.NamingConvertEnum;
 import lee.fund.remote.util.MethodUtils;
 import lee.fund.util.lang.StrKit;
@@ -25,12 +26,14 @@ import java.util.stream.Collectors;
 public class ServiceInfo {
     private String name;// 名称
     private String description;// 描述
+    private FailModeEnum failMode;//失败处理模式
     private Map<String, MethodInfo> methodMap;// 方法列表
 
-    public ServiceInfo(Class<?> clazz, String name, String description, NamingConvertEnum convert) {
+    public ServiceInfo(Class<?> clazz, String name, String description, NamingConvertEnum convert, FailModeEnum failMode) {
         this.name = name;
         this.description = description;
         this.methodMap = new HashMap<>();
+        this.failMode = failMode;
         Arrays.stream(clazz.getMethods()).filter(m -> m.getDeclaringClass() != Object.class).forEach(m -> {
             Optional<RpcMethod> mdOptional = Optional.ofNullable(m.getAnnotation(RpcMethod.class));
             MethodInfo mi = new MethodInfo();
@@ -38,6 +41,7 @@ public class ServiceInfo {
             mi.description = mdOptional.map(o -> o.description()).orElse(StringUtils.EMPTY);
             mi.returnPiInfo = getReturn(m);
             mi.parameters = getParameters(m);
+            mi.failMode = mdOptional.map(o -> o.failMode()).orElse(FailModeEnum.FailOver);
             this.methodMap.put(mi.name, mi);
         });
     }
@@ -77,6 +81,7 @@ public class ServiceInfo {
         private String description;// 描述
         private List<ParameterInfo> parameters;// 参数列表
         private ParameterInfo returnPiInfo;// 返回值
+        private FailModeEnum failMode;//失败处理模式
     }
 
     @Getter

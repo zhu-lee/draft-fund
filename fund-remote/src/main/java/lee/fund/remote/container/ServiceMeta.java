@@ -1,6 +1,7 @@
 package lee.fund.remote.container;
 
 import lee.fund.remote.annotation.RpcService;
+import lee.fund.remote.app.FailModeEnum;
 import lee.fund.remote.app.NamingConvertEnum;
 import lee.fund.util.lang.StrKit;
 import org.apache.commons.lang3.StringUtils;
@@ -34,7 +35,8 @@ public class ServiceMeta {
             if (StrKit.isBlank(name)) {
                 name = clazz.getSimpleName();
             }
-            return new ServiceInfo(clazz, name, description, convert);
+            FailModeEnum failMode = rpcSrOptional.map(o -> o.failMode()).orElse(FailModeEnum.FailOver);
+            return new ServiceInfo(clazz, name, description, convert, failMode);
         });
         return svcMetaMap.get(clazz);
     }

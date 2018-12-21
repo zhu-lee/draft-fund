@@ -3,16 +3,19 @@ package lee.fund.remote.container;
 import com.esotericsoftware.reflectasm.MethodAccess;
 import com.google.common.base.Joiner;
 import lee.fund.remote.annotation.RpcService;
+import lee.fund.remote.app.FailModeEnum;
 import lee.fund.remote.app.NamingConvertEnum;
 import lee.fund.remote.util.MethodUtils;
 import lee.fund.util.lang.StrKit;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * Author: zhu.li
@@ -29,14 +32,17 @@ public class ServiceContainer {
         Optional<RpcService> rpcSrOptional = Optional.ofNullable(clazz.getAnnotation(RpcService.class));
         String description = rpcSrOptional.map(o -> o.description()).orElse(StringUtils.EMPTY);
         NamingConvertEnum convert = rpcSrOptional.map(o -> o.convention()).orElse(NamingConvertEnum.PASCAL);
+        FailModeEnum failMode = rpcSrOptional.map(o -> o.failMode()).orElse(FailModeEnum.FailOver);
         String name = rpcSrOptional.map(o -> o.name()).orElse(null);
         if (StrKit.isBlank(name)) {
             name = clazz.getSimpleName();
         }
-        this.storeService(clazz, instance, name, description, convert);
+        this.storeService(clazz, instance, name, description, convert, failMode);
+
+
     }
 
-    private void storeService(Class<?> clazz, Object instance, String name, String description, NamingConvertEnum convert) {
+    private void storeService(Class<?> clazz, Object instance, String name, String description, NamingConvertEnum convert,FailModeEnum failMode) {
         logger.info("expose service: " + name);
         MethodAccess access = MethodAccess.get(clazz);
         Method[] methods = clazz.getMethods();
@@ -47,13 +53,13 @@ public class ServiceContainer {
                 MethodExecutor methodExecutor = new MethodExecutor(access, instance, index);
                 String smKey = buildKey(name, methodName);
                 executorMap.put(smKey, methodExecutor);
-                logger.info("expose service: {}.{}", name, methodName);
+                logger.info("expose service.methodName: {}.{}", name, methodName);
             } catch (IllegalArgumentException e) {
                 logger.warn("find method index failed: {}", e);
             }
         });
 
-        ServiceInfo serviceInfo = new ServiceInfo(clazz, name, description, convert);
+        ServiceInfo serviceInfo = new ServiceInfo(clazz, name, description, convert, failMode);
         this.containerMap.put(serviceInfo.getName(), serviceInfo);
     }
 

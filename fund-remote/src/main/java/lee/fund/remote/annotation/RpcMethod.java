@@ -16,5 +16,5 @@ public @interface RpcMethod {
     String description() default "";
 
     //失败处理模式
-    FailModeEnum fail() default FailModeEnum.FailOver;
+    FailModeEnum failMode() default FailModeEnum.FailOver;
 }

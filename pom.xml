@@ -14,7 +14,7 @@
     <module>fund-task</module>
     <module>fund-mq</module>
     <module>fund-app</module>
-    <module>fund-serialize</module>
+    <module>fund-pbf</module>
     <module>example</module>
   </modules>
 
@@ -41,6 +41,7 @@
     <io.opencensus.version>0.18.0</io.opencensus.version>
     <google.protobuf.version>3.6.1</google.protobuf.version>
     <fastjson.version>1.2.47</fastjson.version>
+    <asm.version>7.0</asm.version>
   </properties>
   <!--依赖管理-->
   <dependencyManagement>
@@ -72,7 +73,7 @@
       </dependency>
       <dependency>
         <groupId>lee.fund</groupId>
-        <artifactId>fund-serialize</artifactId>
+        <artifactId>fund-pbf</artifactId>
         <version>${fund.version}</version>
       </dependency>
       <dependency>
@@ -140,6 +141,11 @@
         <groupId>com.alibaba</groupId>
         <artifactId>fastjson</artifactId>
         <version>${fastjson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.ow2.asm</groupId>
+        <artifactId>asm</artifactId>
+        <version>${asm.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
