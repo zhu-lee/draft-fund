@@ -1,7 +1,10 @@
-package lee.fund.pbf.test.lib;
+package lee.fund.pbf.utils;
+
+import lombok.Getter;
 
 public final class CodecUtil {
     private static final int TAG_TYPE_BITS = 3;
+    @Getter
     private static final String SUFFIX = "$$Codec";
 
     public static int makeTag(final int fieldNumber, final int wireType) {

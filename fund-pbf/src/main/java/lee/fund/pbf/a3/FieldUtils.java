@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package lee.fund.pbf.test.lib;
+package lee.fund.pbf.a3;
+
+import lee.fund.pbf.utils.ClassHelper;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -36,7 +38,7 @@ public final class FieldUtils {
     
     static {
         
-        PRIMITIVE_TYPE_MAPPING = new HashMap<String, String>();
+        PRIMITIVE_TYPE_MAPPING = new HashMap<>();
         
         PRIMITIVE_TYPE_MAPPING.put(int.class.getSimpleName(), Integer.class.getSimpleName());
         PRIMITIVE_TYPE_MAPPING.put(long.class.getSimpleName(), Long.class.getSimpleName());

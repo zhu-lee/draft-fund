@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package lee.fund.pbf.test.lib;
+package lee.fund.pbf.a3;
 
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
@@ -79,5 +79,5 @@ public interface Codec<T> {
      * @throws IOException in case of create {@link Descriptor} failed
      */
     Descriptor getDescriptor() throws IOException;
-    
+
 }

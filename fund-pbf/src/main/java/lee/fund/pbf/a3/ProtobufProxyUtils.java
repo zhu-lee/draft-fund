@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package lee.fund.pbf.test.lib;
+package lee.fund.pbf.a3;
 
 import lee.fund.util.lang.UncheckedException;
 import org.slf4j.Logger;
@@ -78,7 +78,8 @@ public class ProtobufProxyUtils {
 
         //TODO fieldList 校验空出错？
         if (fields == null || fields.isEmpty()) {
-            throw new IllegalArgumentException("Invalid class [" + cls.getName() + "] no field use annotation @ " + ProtoField.class.getName() + " at class " + cls.getName());
+            throw new IllegalArgumentException("Invalid class [" + cls.getName() + "] " +
+                    "no field use annotation @ " + ProtoField.class.getName() + " at class " + cls.getName());
         }
         return ProtobufProxyUtils.processDefaultValue(cls, fields, validate);
     }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package lee.fund.pbf.test.lib;
+package lee.fund.pbf.a3;
 
 import org.springframework.core.ResolvableType;
 

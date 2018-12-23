@@ -1,4 +1,4 @@
-package lee.fund.pbf.test.lib;
+package lee.fund.pbf.a3;
 
 import java.lang.annotation.*;
 
@@ -40,5 +40,4 @@ public @interface ProtoField {
      * @return description to the field
      */
     String description() default "";
-
 }

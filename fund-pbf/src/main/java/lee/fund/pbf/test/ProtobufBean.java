@@ -1,8 +1,8 @@
 package lee.fund.pbf.test;
 
 import com.coreos.jetcd.api.User;
-import lee.fund.pbf.test.lib.FieldType;
-import lee.fund.pbf.test.lib.ProtoField;
+import lee.fund.pbf.a3.FieldType;
+import lee.fund.pbf.a3.ProtoField;
 import lombok.Getter;
 import lombok.Setter;
 
