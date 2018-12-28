@@ -110,6 +110,11 @@ public enum FieldType {
      */
     ENUM("Enum", "enum", "WIRETYPE_VARINT", ".ordinal()", WireFormat.FieldType.ENUM, null, 17),
 
+    @Deprecated
+    TIME("Date", "int64", "WIRETYPE_VARINT", ".getTime()", WireFormat.FieldType.INT64, "0L", 3),
+    @Deprecated
+    LTIME("LocalDateTime", "int64", "WIRETYPE_VARINT", ".atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()", WireFormat.FieldType.INT64, "0L", 3),
+
     /**
      * The default.
      */

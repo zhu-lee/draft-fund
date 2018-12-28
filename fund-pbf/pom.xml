@@ -29,6 +29,10 @@
             <groupId>org.ow2.asm</groupId>
             <artifactId>asm</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.squareup</groupId>
+            <artifactId>protoparser</artifactId>
+        </dependency>
 
     </dependencies>
 

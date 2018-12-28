@@ -42,6 +42,7 @@
     <google.protobuf.version>3.6.1</google.protobuf.version>
     <fastjson.version>1.2.47</fastjson.version>
     <asm.version>7.0</asm.version>
+    <protoparser.version>4.0.3</protoparser.version>
   </properties>
   <!--依赖管理-->
   <dependencyManagement>
@@ -146,6 +147,11 @@
         <groupId>org.ow2.asm</groupId>
         <artifactId>asm</artifactId>
         <version>${asm.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.squareup</groupId>
+        <artifactId>protoparser</artifactId>
+        <version>${protoparser.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
