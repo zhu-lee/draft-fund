@@ -30,7 +30,10 @@ public abstract class RemoteApplication {
         this.args = args;
         this.configuration = configuration;
         this.logger = LoggerFactory.getLogger(bootStrap);
-        //TODO 加载(如果有spring.xml)  spring.config.location这个关键字指定配置文件的路径 spring.config.name”等于{application}参数加载配置文件
+        //TODO 加载(如果有spring.xml)
+        //TODO spring.config.location这个关键字指定配置文件的路径
+        //TODO "spring.config.name"等于{application}参数，如果未指定spring.profiles.active，就默认{application}.properties
+        //TODO spring.profiles.active 用哪个profile文件
     }
 
     public void run(){

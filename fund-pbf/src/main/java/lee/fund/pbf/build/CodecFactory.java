@@ -19,7 +19,7 @@ public final class CodecFactory {
     private static final ConcurrentMap<String, Codec> CODEC_MAP = new ConcurrentHashMap<>();
     private static final CodecClassLoader LOADER = new CodecClassLoader(Thread.currentThread().getContextClassLoader());
 
-    public static <T> Codec<T> get(Class<T> cls) {
+    public static <T> Codec get(Class<T> cls) {
         if (cls.isPrimitive() || cls.isEnum() || cls.isAnnotation() || cls.isInterface()) {
             throw new IllegalArgumentException("can not create codec for class: " + cls.getName());
         }

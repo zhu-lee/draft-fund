@@ -12,9 +12,9 @@ import lee.fund.remote.container.MethodExecutor;
 import lee.fund.remote.container.ServiceContainer;
 import lee.fund.remote.exception.RpcError;
 import lee.fund.remote.exception.RpcException;
+import lee.fund.remote.protocol.RemoteValue;
 import lee.fund.remote.protocol.RequestMessage;
 import lee.fund.remote.protocol.ResponseMessage;
-import lee.fund.remote.protocol.SimpleValue;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -54,11 +54,11 @@ public class ServerHandler extends SimpleChannelInboundHandler<RequestMessage> {
         }
 
         try {
-            this.server.getThreadPool().execute(()-> new InnerTask(requestMessage,ctx.channel(),this.server.getServiceContainer()));
+            this.server.getThreadPool().execute(() -> new InnerTask(requestMessage, ctx.channel(), this.server.getServiceContainer()));
         } catch (RejectedExecutionException e) {
             ResponseMessage responseMessage = ResponseMessage.failed(RpcError.SERVER_BUSY);
             ctx.writeAndFlush(responseMessage);
-            logger.error("biz thread pools is full，MaxThreads:{}",this.server.getServerConfig().getMaxThreads());
+            logger.error("biz thread pools is full，MaxThreads:{}", this.server.getServerConfig().getMaxThreads());
         }
     }
 
@@ -82,12 +82,12 @@ public class ServerHandler extends SimpleChannelInboundHandler<RequestMessage> {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        logger.error("server error",cause);
+        logger.error("server error", cause);
         ctx.close();
     }
 
     @RequiredArgsConstructor
-    private class InnerTask implements Runnable{
+    private class InnerTask implements Runnable {
         private final RequestMessage requestMessage;
         private final Channel channel;
         private final ServiceContainer container;
@@ -111,13 +111,13 @@ public class ServerHandler extends SimpleChannelInboundHandler<RequestMessage> {
             channel.writeAndFlush(responseMessage);
         }
 
-        private Object[] buildArgs(Class[] types, List<SimpleValue> values) {
+        private Object[] buildArgs(Class[] types, List<RemoteValue> values) {
             if (values == null) {
                 return null;
             }
             Object[] args = new Object[values.size()];
             for (int i = 0; i < args.length; i++) {
-                SimpleValue value = values.get(i);
+                RemoteValue value = values.get(i);
                 //TODO 实现decode
 //                args[i] = SimpleEncoder.decode(value.getDataType(), value.getData(), types[i]);
             }

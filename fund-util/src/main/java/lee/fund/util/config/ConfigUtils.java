@@ -69,4 +69,8 @@ public class ConfigUtils {
         }
         return globalFolder;
     }
+
+    public static String getConfPath(String filename) {
+        return getEtcFolder() + filename;
+    }
 }
