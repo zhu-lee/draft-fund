@@ -11,7 +11,7 @@ import lombok.Setter;
  */
 @Setter
 @Getter
-public class SimpleCookie {
+public class RemoteCookie {
     private String name;
     private String value;
     private long expireTime;

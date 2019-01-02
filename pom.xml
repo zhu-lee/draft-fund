@@ -43,6 +43,7 @@
     <fastjson.version>1.2.47</fastjson.version>
     <asm.version>7.0</asm.version>
     <protoparser.version>4.0.3</protoparser.version>
+    <commons-text.version>1.6</commons-text.version>
   </properties>
   <!--依赖管理-->
   <dependencyManagement>
@@ -152,6 +153,11 @@
         <groupId>com.squareup</groupId>
         <artifactId>protoparser</artifactId>
         <version>${protoparser.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-text</artifactId>
+        <version>${commons-text.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

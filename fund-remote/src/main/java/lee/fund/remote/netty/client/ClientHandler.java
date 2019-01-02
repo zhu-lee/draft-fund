@@ -16,12 +16,13 @@ import org.slf4j.LoggerFactory;
  * Desc:
  */
 @ChannelHandler.Sharable
-public class ClientHandler extends SimpleChannelInboundHandler{
+public class ClientHandler extends SimpleChannelInboundHandler<ResponseMessage> {
     private final Logger logger = LoggerFactory.getLogger(ClientHandler.class);
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
-
+    protected void channelRead0(ChannelHandlerContext ctx, ResponseMessage msg) throws Exception {
+        SimpleClientChannel channel = (SimpleClientChannel) ctx.channel();
+        channel.set(msg);
     }
 
     @Override
@@ -39,7 +40,7 @@ public class ClientHandler extends SimpleChannelInboundHandler{
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         ResponseMessage responseMessage = ResponseMessage.failed(cause);
 //        ctx.channel(). TODO 处理
-        logger.error("unknown client error",cause);
+        logger.error("unknown client error", cause);
         ctx.close();
     }
 }

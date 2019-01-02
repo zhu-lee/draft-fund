@@ -1,5 +1,6 @@
 package lee.fund.util.lang;
 
+import lombok.Getter;
 import org.apache.commons.lang3.text.StrBuilder;
 
 import java.io.PrintStream;
@@ -13,7 +14,8 @@ import java.util.Map;
  */
 public class FaultException extends RuntimeException {
     private final int errorCode;
-    private Map<String, Object> data;
+    @Getter
+    private Map<String, Object> data = new HashMap<>();
 
     public FaultException() {
         errorCode = -1;
@@ -126,18 +128,6 @@ public class FaultException extends RuntimeException {
      */
     public String getStackTraceString() {
         return Exceptions.getStackTrace(this);
-    }
-
-    /**
-     * 获取自定义数据。
-     *
-     * @return
-     */
-    public Map<String, Object> getData() {
-        if (data == null) {
-            data = new HashMap<>();
-        }
-        return data;
     }
 
     /**

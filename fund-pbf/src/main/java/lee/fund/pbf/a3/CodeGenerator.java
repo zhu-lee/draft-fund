@@ -19,7 +19,7 @@ import com.google.protobuf.Descriptors.Descriptor;
 import lee.fund.pbf.a3.utils.ClassHelper;
 import lee.fund.pbf.a3.utils.FieldInfo;
 import lee.fund.pbf.a3.utils.FieldUtils;
-import lee.fund.pbf.code.CodedConstant;
+import lee.fund.pbf.a3.utils.CodedConstant;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

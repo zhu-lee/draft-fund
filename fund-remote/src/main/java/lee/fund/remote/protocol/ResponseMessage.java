@@ -19,10 +19,10 @@ import java.util.List;
 @Getter
 public class ResponseMessage {
     private boolean success;
-    private SimpleValue result;
+    private RemoteValue result;
     private String errorInfo;
     private long serverTime;
-    private List<SimpleCookie> cookies;
+    private List<RemoteCookie> cookies;
     private int errorCode;//错误代码
     private String errorDetail;//错误详情，如异常堆栈，一般只应该在 DEBUG 模式传播给客户端，便于快速调试
     private String messageID;//消息 ID, 每个请求唯一

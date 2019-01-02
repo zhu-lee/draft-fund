@@ -4,6 +4,7 @@ import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
 import com.google.protobuf.Descriptors;
 import lee.fund.pbf.a3.ProtoField;
+import lee.fund.pbf.a3.utils.CodedConstant;
 import lee.fund.pbf.a3.utils.FieldInfo;
 import lee.fund.pbf.a3.utils.FieldUtils;
 import lee.fund.pbf.a3.utils.ProtobufProxyUtils;
@@ -67,7 +68,6 @@ public class CodeCreator {
         try {
             // 获取生成的class文件对应的二进制流
             byte[] code = cw.toByteArray();
-
 
             //将二进制流写到本地磁盘上
             FileOutputStream fos = new FileOutputStream("E:\\work\\workspace-fund\\draft-fund2\\fund-pbf\\src\\main\\java\\lee\\fund\\pbf\\test\\Example.class");
@@ -287,7 +287,6 @@ public class CodeCreator {
         mv.visitTypeInsn(CHECKCAST, ctx.getBeanClassName());
         mv.visitMethodInsn(INVOKEVIRTUAL, ctx.getCodecClassName(), "size", String.format("(%s)I", ctx.getBeanDescriptor()), false);
         mv.visitInsn(IRETURN);
-//        mv.visitMaxs(2, 2);
         mv.visitMaxs(0, 0);
         mv.visitEnd();
     }

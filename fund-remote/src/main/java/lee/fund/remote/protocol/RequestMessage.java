@@ -18,8 +18,8 @@ public class RequestMessage {
     private String userToken;
     private String serviceName;
     private String methodName;
-    private List<SimpleValue> parameters;
-    private List<SimpleCookie> cookies;
+    private List<RemoteValue> parameters;
+    private List<RemoteCookie> cookies;
     private String contextID;//上下文 ID, 在整个请求链中保持不变
     private String messageID;//消息 ID, 每个请求唯一
     private String serverName;//Server名
