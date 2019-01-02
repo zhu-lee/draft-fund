@@ -13,29 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package lee.fund.pbf.descriptor;
+package lee.fund.pbf.a3.descriptor;
 
-import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
-import com.google.protobuf.DescriptorProtos.SourceCodeInfo.Location;
+import com.google.protobuf.DescriptorProtos.EnumValueOptions;
 import lee.fund.pbf.a3.ProtoField;
 
 import java.util.List;
 
 /**
- * JProtobuf POJO supports for {@link Location}
+ * JProtobuf POJO supports for {@link EnumValueOptions}
  *
  * @author xiemalin
  * @since 2.0.1
  */
-public class LocationPOJO {
+public class EnumValueOptionsPOJO {
 
-    @ProtoField(order = FileDescriptorSet.FILE_FIELD_NUMBER)
-    public List<FileDescriptorProtoPOJO> files;
-
-    @Override
-    public String toString() {
-        return "LocationPOJO [files=" + files + "]";
-    }
-
-
+    @ProtoField(order = EnumValueOptions.UNINTERPRETED_OPTION_FIELD_NUMBER)
+    public List<UninterpretedOptionPOJO> uninterpretedOptions;
 }

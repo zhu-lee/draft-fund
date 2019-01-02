@@ -13,29 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package lee.fund.pbf.descriptor;
-
-import com.google.protobuf.DescriptorProtos.DescriptorProto.ExtensionRange;
-import lee.fund.pbf.a3.ProtoField;
-
 /**
- * JProtobuf POJO supports for {@link ExtensionRange}
- *
+ * Implements for google protocol buffer Descriptor 
+ * 
  * @author xiemalin
  * @since 2.0.1
  */
-public class ExtensionRangePOJO {
-
-    @ProtoField(order = ExtensionRange.START_FIELD_NUMBER)
-    public Integer start;
-
-    @ProtoField(order = ExtensionRange.END_FIELD_NUMBER)
-    public Integer end;
-
-    @Override
-    public String toString() {
-        return "ExtensionRangePOJO [start=" + start + ", end=" + end + "]";
-    }
-
-
-}
+package lee.fund.pbf.a3.descriptor;

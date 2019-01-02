@@ -13,31 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package lee.fund.pbf.descriptor;
+package lee.fund.pbf.a3.descriptor;
 
-import com.google.protobuf.DescriptorProtos.EnumOptions;
+import com.google.protobuf.DescriptorProtos.MessageOptions;
 import lee.fund.pbf.a3.FieldType;
 import lee.fund.pbf.a3.ProtoField;
 
 import java.util.List;
 
 /**
- * JProtobuf POJO for {@link EnumOptions}
+ * JProtobuf supports for {@link MessageOptions}
  *
  * @author xiemalin
  * @since 2.0.1
  */
-public class EnumOptionsPOJO {
+public class MessageOptionsPOJO {
 
-    @ProtoField(order = EnumOptions.ALLOW_ALIAS_FIELD_NUMBER)
-    public Boolean allowAlias;
+    @ProtoField(order = MessageOptions.MESSAGE_SET_WIRE_FORMAT_FIELD_NUMBER)
+    public Boolean messageSetWireFormat;
 
-    @ProtoField(order = EnumOptions.UNINTERPRETED_OPTION_FIELD_NUMBER, type = FieldType.OBJECT)
+    @ProtoField(order = MessageOptions.NO_STANDARD_DESCRIPTOR_ACCESSOR_FIELD_NUMBER)
+    public Boolean noStandardDescriptorAccessor;
+
+    @ProtoField(order = MessageOptions.UNINTERPRETED_OPTION_FIELD_NUMBER, type = FieldType.OBJECT)
     public List<UninterpretedOptionPOJO> uninterpretedOptions;
 
     @Override
     public String toString() {
-        return "EnumOptionsPOJO [allowAlias=" + allowAlias + ", uninterpretedOptions=" + uninterpretedOptions + "]";
+        return "MessageOptionsPOJO [messageSetWireFormat=" + messageSetWireFormat + ", noStandardDescriptorAccessor="
+                + noStandardDescriptorAccessor + ", uninterpretedOptions=" + uninterpretedOptions + "]";
     }
 
 

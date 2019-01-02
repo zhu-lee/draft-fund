@@ -13,28 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package lee.fund.pbf.descriptor;
+package lee.fund.pbf.a3.descriptor;
 
-import com.google.protobuf.DescriptorProtos.FileOptions;
-import lee.fund.util.lang.EnumValueSupport;
+import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
+import com.google.protobuf.DescriptorProtos.SourceCodeInfo.Location;
+import lee.fund.pbf.a3.ProtoField;
+
+import java.util.List;
 
 /**
- * Enumeration mode for optimize defines at {@link FileOptions}
+ * JProtobuf POJO supports for {@link Location}
  *
  * @author xiemalin
  * @since 2.0.1
  */
-public enum OptimizeMode implements EnumValueSupport {
-    SPEED(1), CODE_SIZE(2), LITE_RUNTIME(3);
+public class LocationPOJO {
 
-    private int value;
-
-    OptimizeMode(int value) {
-        this.value = value;
-    }
+    @ProtoField(order = FileDescriptorSet.FILE_FIELD_NUMBER)
+    public List<FileDescriptorProtoPOJO> files;
 
     @Override
-    public int value() {
-        return value;
+    public String toString() {
+        return "LocationPOJO [files=" + files + "]";
     }
+
+
 }

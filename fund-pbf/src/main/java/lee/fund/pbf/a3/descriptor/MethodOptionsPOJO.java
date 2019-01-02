@@ -13,21 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package lee.fund.pbf.descriptor;
+package lee.fund.pbf.a3.descriptor;
 
-import com.google.protobuf.DescriptorProtos.EnumValueOptions;
+import com.google.protobuf.DescriptorProtos.MethodOptions;
+import lee.fund.pbf.a3.FieldType;
 import lee.fund.pbf.a3.ProtoField;
 
 import java.util.List;
 
 /**
- * JProtobuf POJO supports for {@link EnumValueOptions}
+ * JProtobuf POJO supports for {@link MethodOptions}
  *
  * @author xiemalin
  * @since 2.0.1
  */
-public class EnumValueOptionsPOJO {
+public class MethodOptionsPOJO {
 
-    @ProtoField(order = EnumValueOptions.UNINTERPRETED_OPTION_FIELD_NUMBER)
+    @ProtoField(order = MethodOptions.UNINTERPRETED_OPTION_FIELD_NUMBER, type = FieldType.OBJECT)
     public List<UninterpretedOptionPOJO> uninterpretedOptions;
 }

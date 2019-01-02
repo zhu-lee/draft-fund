@@ -13,28 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package lee.fund.pbf.descriptor;
+package lee.fund.pbf.a3.descriptor;
 
-import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
-import com.google.protobuf.DescriptorProtos.UninterpretedOption.NamePart;
+import com.google.protobuf.DescriptorProtos.EnumOptions;
+import lee.fund.pbf.a3.FieldType;
 import lee.fund.pbf.a3.ProtoField;
 
 import java.util.List;
 
 /**
- * JProtobuf POJO supports for {@link NamePart}
+ * JProtobuf POJO for {@link EnumOptions}
  *
  * @author xiemalin
  * @since 2.0.1
  */
-public class NamePartPOJO {
+public class EnumOptionsPOJO {
 
-    @ProtoField(order = FileDescriptorSet.FILE_FIELD_NUMBER)
-    public List<FileDescriptorProtoPOJO> files;
+    @ProtoField(order = EnumOptions.ALLOW_ALIAS_FIELD_NUMBER)
+    public Boolean allowAlias;
+
+    @ProtoField(order = EnumOptions.UNINTERPRETED_OPTION_FIELD_NUMBER, type = FieldType.OBJECT)
+    public List<UninterpretedOptionPOJO> uninterpretedOptions;
 
     @Override
     public String toString() {
-        return "NamePartPOJO [files=" + files + "]";
+        return "EnumOptionsPOJO [allowAlias=" + allowAlias + ", uninterpretedOptions=" + uninterpretedOptions + "]";
     }
 
 

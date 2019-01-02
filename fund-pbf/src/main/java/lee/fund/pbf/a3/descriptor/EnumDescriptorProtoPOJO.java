@@ -13,35 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package lee.fund.pbf.descriptor;
+package lee.fund.pbf.a3.descriptor;
 
-import com.google.protobuf.DescriptorProtos.MessageOptions;
+import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
 import lee.fund.pbf.a3.FieldType;
 import lee.fund.pbf.a3.ProtoField;
 
 import java.util.List;
 
 /**
- * JProtobuf supports for {@link MessageOptions}
+ * JProtobuf POJO supports for {@link EnumDescriptorProto}
  *
  * @author xiemalin
  * @since 2.0.1
  */
-public class MessageOptionsPOJO {
+public class EnumDescriptorProtoPOJO {
 
-    @ProtoField(order = MessageOptions.MESSAGE_SET_WIRE_FORMAT_FIELD_NUMBER)
-    public Boolean messageSetWireFormat;
+    @ProtoField(order = EnumDescriptorProto.NAME_FIELD_NUMBER)
+    public String name;
 
-    @ProtoField(order = MessageOptions.NO_STANDARD_DESCRIPTOR_ACCESSOR_FIELD_NUMBER)
-    public Boolean noStandardDescriptorAccessor;
 
-    @ProtoField(order = MessageOptions.UNINTERPRETED_OPTION_FIELD_NUMBER, type = FieldType.OBJECT)
-    public List<UninterpretedOptionPOJO> uninterpretedOptions;
+    @ProtoField(order = EnumDescriptorProto.VALUE_FIELD_NUMBER, type = FieldType.OBJECT)
+    public List<EnumValueDescriptorProtoPOJO> values;
+
+    @ProtoField(order = EnumDescriptorProto.OPTIONS_FIELD_NUMBER, type = FieldType.OBJECT)
+    public List<EnumOptionsPOJO> options;
 
     @Override
     public String toString() {
-        return "MessageOptionsPOJO [messageSetWireFormat=" + messageSetWireFormat + ", noStandardDescriptorAccessor="
-                + noStandardDescriptorAccessor + ", uninterpretedOptions=" + uninterpretedOptions + "]";
+        return "EnumDescriptorProtoPOJO [name=" + name + ", values=" + values + ", options=" + options + "]";
     }
 
 

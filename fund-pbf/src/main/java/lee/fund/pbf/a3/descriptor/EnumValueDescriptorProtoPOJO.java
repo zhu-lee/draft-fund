@@ -13,28 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package lee.fund.pbf.descriptor;
+package lee.fund.pbf.a3.descriptor;
 
-import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
+import com.google.protobuf.DescriptorProtos.EnumValueDescriptorProto;
 import lee.fund.pbf.a3.FieldType;
 import lee.fund.pbf.a3.ProtoField;
 
 import java.util.List;
 
 /**
- * JProtobuf supports for  {@link ServiceDescriptorProto}
+ * JProtobuf POJO supports for {@link EnumValueDescriptorProto}
  *
  * @author xiemalin
  * @since 2.0.1
  */
-public class ServiceDescriptorProtoPOJO {
+public class EnumValueDescriptorProtoPOJO {
 
-    @ProtoField(order = ServiceDescriptorProto.NAME_FIELD_NUMBER)
+    @ProtoField(order = EnumValueDescriptorProto.NAME_FIELD_NUMBER)
     public String name;
 
-    @ProtoField(order = ServiceDescriptorProto.METHOD_FIELD_NUMBER, type = FieldType.OBJECT)
-    public List<MethodDescriptorProtoPOJO> methods;
+    @ProtoField(order = EnumValueDescriptorProto.NUMBER_FIELD_NUMBER)
+    public Integer number;
 
-    @ProtoField(order = ServiceDescriptorProto.OPTIONS_FIELD_NUMBER, type = FieldType.OBJECT)
-    public List<ServiceOptionsPOJO> options;
+    @ProtoField(order = EnumValueDescriptorProto.OPTIONS_FIELD_NUMBER, type = FieldType.OBJECT)
+    public List<EnumValueOptionsPOJO> options;
+
+    @Override
+    public String toString() {
+        return "EnumValueDescriptorProtoPOJO [name=" + name + ", number=" + number + ", options=" + options + "]";
+    }
+
 }

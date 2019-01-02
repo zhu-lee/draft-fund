@@ -27,7 +27,7 @@ import com.squareup.protoparser.*;
 import lee.fund.pbf.a3.*;
 import lee.fund.pbf.a3.utils.FieldInfo;
 import lee.fund.pbf.build.CodecFactory;
-import lee.fund.pbf.descriptor.*;
+import lee.fund.pbf.a3.descriptor.*;
 import lee.fund.util.lang.EnumValueSupport;
 
 import java.io.File;

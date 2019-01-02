@@ -13,27 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package lee.fund.pbf.descriptor;
+package lee.fund.pbf.a3.descriptor;
 
-import com.google.protobuf.DescriptorProtos.SourceCodeInfo;
+import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
+import com.google.protobuf.DescriptorProtos.UninterpretedOption.NamePart;
 import lee.fund.pbf.a3.ProtoField;
 
 import java.util.List;
 
 /**
- * JProtobuf supports for {@link SourceCodeInfo}
+ * JProtobuf POJO supports for {@link NamePart}
  *
  * @author xiemalin
  * @since 2.0.1
  */
-public class SourceCodeInfoPOJO {
+public class NamePartPOJO {
 
-    @ProtoField(order = SourceCodeInfo.LOCATION_FIELD_NUMBER)
-    public List<LocationPOJO> locations;
+    @ProtoField(order = FileDescriptorSet.FILE_FIELD_NUMBER)
+    public List<FileDescriptorProtoPOJO> files;
 
     @Override
     public String toString() {
-        return "SourceCodeInfoPOJO [locations=" + locations + "]";
+        return "NamePartPOJO [files=" + files + "]";
     }
 
 

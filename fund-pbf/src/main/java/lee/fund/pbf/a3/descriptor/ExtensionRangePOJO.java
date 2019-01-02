@@ -13,28 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package lee.fund.pbf.descriptor;
+package lee.fund.pbf.a3.descriptor;
 
-import com.google.protobuf.DescriptorProtos.ServiceOptions;
-import lee.fund.pbf.a3.FieldType;
+import com.google.protobuf.DescriptorProtos.DescriptorProto.ExtensionRange;
 import lee.fund.pbf.a3.ProtoField;
 
-import java.util.List;
-
 /**
- * JProtobuf POJO supports for {@link ServiceOptions}
+ * JProtobuf POJO supports for {@link ExtensionRange}
  *
  * @author xiemalin
  * @since 2.0.1
  */
-public class ServiceOptionsPOJO {
+public class ExtensionRangePOJO {
 
-    @ProtoField(order = ServiceOptions.UNINTERPRETED_OPTION_FIELD_NUMBER, type = FieldType.OBJECT)
-    public List<UninterpretedOptionPOJO> uninterpretedOption;
+    @ProtoField(order = ExtensionRange.START_FIELD_NUMBER)
+    public Integer start;
+
+    @ProtoField(order = ExtensionRange.END_FIELD_NUMBER)
+    public Integer end;
 
     @Override
     public String toString() {
-        return "ServiceOptionsPOJO [uninterpretedOption=" + uninterpretedOption + "]";
+        return "ExtensionRangePOJO [start=" + start + ", end=" + end + "]";
     }
 
 

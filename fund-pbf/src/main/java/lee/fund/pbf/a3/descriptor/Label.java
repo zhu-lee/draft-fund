@@ -13,10 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package lee.fund.pbf.a3.descriptor;
+
+import lee.fund.util.lang.EnumValueSupport;
+
 /**
- * Implements for google protocol buffer Descriptor 
- * 
+ * TODO
+ *
  * @author xiemalin
  * @since 2.0.1
  */
-package lee.fund.pbf.descriptor;
+public enum Label implements EnumValueSupport {
+    LABEL_OPTIONAL(1), LABEL_REQUIRED(2), LABEL_REPEATED(3);
+
+    private int value;
+
+
+    Label(int value) {
+        this.value = value;
+    }
+
+
+    @Override
+    public int value() {
+        return value;
+    }
+}

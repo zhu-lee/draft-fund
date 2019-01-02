@@ -13,29 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package lee.fund.pbf.descriptor;
+package lee.fund.pbf.a3.descriptor;
 
-import lee.fund.util.lang.EnumValueSupport;
+import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
+import lee.fund.pbf.a3.FieldType;
+import lee.fund.pbf.a3.ProtoField;
+
+import java.util.List;
 
 /**
- * TODO
+ * JProtobuf supports for  {@link ServiceDescriptorProto}
  *
  * @author xiemalin
  * @since 2.0.1
  */
-public enum Label implements EnumValueSupport {
-    LABEL_OPTIONAL(1), LABEL_REQUIRED(2), LABEL_REPEATED(3);
+public class ServiceDescriptorProtoPOJO {
 
-    private int value;
+    @ProtoField(order = ServiceDescriptorProto.NAME_FIELD_NUMBER)
+    public String name;
 
+    @ProtoField(order = ServiceDescriptorProto.METHOD_FIELD_NUMBER, type = FieldType.OBJECT)
+    public List<MethodDescriptorProtoPOJO> methods;
 
-    Label(int value) {
-        this.value = value;
-    }
-
-
-    @Override
-    public int value() {
-        return value;
-    }
+    @ProtoField(order = ServiceDescriptorProto.OPTIONS_FIELD_NUMBER, type = FieldType.OBJECT)
+    public List<ServiceOptionsPOJO> options;
 }

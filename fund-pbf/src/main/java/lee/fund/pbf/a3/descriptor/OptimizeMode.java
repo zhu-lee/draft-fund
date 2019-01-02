@@ -13,22 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package lee.fund.pbf.descriptor;
+package lee.fund.pbf.a3.descriptor;
 
-import com.google.protobuf.DescriptorProtos.MethodOptions;
-import lee.fund.pbf.a3.FieldType;
-import lee.fund.pbf.a3.ProtoField;
-
-import java.util.List;
+import com.google.protobuf.DescriptorProtos.FileOptions;
+import lee.fund.util.lang.EnumValueSupport;
 
 /**
- * JProtobuf POJO supports for {@link MethodOptions}
+ * Enumeration mode for optimize defines at {@link FileOptions}
  *
  * @author xiemalin
  * @since 2.0.1
  */
-public class MethodOptionsPOJO {
+public enum OptimizeMode implements EnumValueSupport {
+    SPEED(1), CODE_SIZE(2), LITE_RUNTIME(3);
 
-    @ProtoField(order = MethodOptions.UNINTERPRETED_OPTION_FIELD_NUMBER, type = FieldType.OBJECT)
-    public List<UninterpretedOptionPOJO> uninterpretedOptions;
+    private int value;
+
+    OptimizeMode(int value) {
+        this.value = value;
+    }
+
+    @Override
+    public int value() {
+        return value;
+    }
 }

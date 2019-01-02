@@ -5,11 +5,12 @@ import io.netty.channel.pool.ChannelPool;
 import io.netty.util.internal.ObjectUtil;
 import lee.fund.remote.context.Guid;
 import lee.fund.remote.context.RpcContext;
+import lee.fund.remote.exception.RpcError;
+import lee.fund.remote.exception.RpcException;
 import lee.fund.remote.protocol.RequestMessage;
-import lee.fund.remote.protocol.SimpleEncoder;
 import lee.fund.remote.protocol.SimpleValue;
 import lee.fund.util.config.AppConf;
-import org.apache.commons.lang3.StringUtils;
+import lee.fund.util.lang.FaultException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,10 +30,7 @@ public class RemoteInvoker implements Invoker {
     private static String appName;
 
     static {
-        appName = AppConf.instance().getServerConf().getName();
-        if (appName == null) {
-            appName = StringUtils.EMPTY;
-        }
+        appName = Strings.nullToEmpty(AppConf.instance().getServerConf().getName());
     }
 
     public RemoteInvoker(ClientConfig clientConfig, ChannelPool channelPool) {
@@ -50,6 +48,11 @@ public class RemoteInvoker implements Invoker {
     public Object invoke(String serviceName, String method, Object[] args, Class<?> returnType) {
         RequestMessage requestMessage;
         try {
+            try {
+                requestMessage = this.createRequestMessage(serviceName, method, args);
+            } catch (Exception e) {
+                throw fault(RpcError.CLIENT_UNKNOWN_ERROR, e.getMessage());
+            }
 
         } catch (Exception e) {
 
@@ -76,5 +79,27 @@ public class RemoteInvoker implements Invoker {
             requestMessage.setParameters(parameters);
         }
         return requestMessage;
+    }
+
+    private FaultException fault(RpcError error, Throwable e) {
+        int code;
+        String msg;
+        if (e instanceof RpcException) {
+            RpcException re = (RpcException) e;
+            code = re.getErrorCode();
+            msg = re.getMessage();
+        } else {
+            code = error.value();
+            msg = String.format(error.description(), e.getMessage());
+        }
+        FaultException fe = new FaultException(code, msg, e);
+        putRemoteServer(fe, clientConfig);
+        putProfile(fe);
+        return fe;
+    }
+
+    public static void putRemoteServer(FaultException fault, ClientConfig clientConfig) {
+        fault.getData().put(CustomErrorDataKeys.SERVER_NAME, clientConfig.getName());
+        fault.getData().put(CustomErrorDataKeys.SERVER_ADDRESS, clientConfig.getAddress().toString());
     }
 }

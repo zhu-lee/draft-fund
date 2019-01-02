@@ -13,35 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package lee.fund.pbf.descriptor;
+package lee.fund.pbf.a3.descriptor;
 
-import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
-import lee.fund.pbf.a3.FieldType;
+import com.google.protobuf.DescriptorProtos.SourceCodeInfo;
 import lee.fund.pbf.a3.ProtoField;
 
 import java.util.List;
 
 /**
- * JProtobuf POJO supports for {@link EnumDescriptorProto}
+ * JProtobuf supports for {@link SourceCodeInfo}
  *
  * @author xiemalin
  * @since 2.0.1
  */
-public class EnumDescriptorProtoPOJO {
+public class SourceCodeInfoPOJO {
 
-    @ProtoField(order = EnumDescriptorProto.NAME_FIELD_NUMBER)
-    public String name;
-
-
-    @ProtoField(order = EnumDescriptorProto.VALUE_FIELD_NUMBER, type = FieldType.OBJECT)
-    public List<EnumValueDescriptorProtoPOJO> values;
-
-    @ProtoField(order = EnumDescriptorProto.OPTIONS_FIELD_NUMBER, type = FieldType.OBJECT)
-    public List<EnumOptionsPOJO> options;
+    @ProtoField(order = SourceCodeInfo.LOCATION_FIELD_NUMBER)
+    public List<LocationPOJO> locations;
 
     @Override
     public String toString() {
-        return "EnumDescriptorProtoPOJO [name=" + name + ", values=" + values + ", options=" + options + "]";
+        return "SourceCodeInfoPOJO [locations=" + locations + "]";
     }
 
 
