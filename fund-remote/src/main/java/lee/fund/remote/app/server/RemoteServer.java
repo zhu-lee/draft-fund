@@ -1,6 +1,7 @@
 package lee.fund.remote.app.server;
 
 import lee.fund.remote.Server;
+import lee.fund.remote.app.client.RemoteClient;
 import lee.fund.remote.container.ServiceContainer;
 import lee.fund.remote.netty.server.NettyServer;
 import lee.fund.remote.netty.server.ServerConfig;
@@ -15,7 +16,7 @@ import org.slf4j.LoggerFactory;
  * Date:   Created in 2018/11/28 16:47
  * Desc:
  */
-public abstract class RemoteServer implements Server{
+public abstract class RemoteServer implements Server {
     private static final Logger logger = LoggerFactory.getLogger(JetcdRegistry.class);
     private static final JetcdRegistry registry = JetcdRegistry.getInstance();
     private NettyServer server;
@@ -42,21 +43,20 @@ public abstract class RemoteServer implements Server{
 
     @Override
     public void exposeService(Class<?> clazz, Object instance) {
-        //TODO 校验
-//        if (RpcClient.isProxy(instance)) {
-//            throw new RuntimeException(String.format("can't register a proxy object as service [%s], this will cause dead circulation", clazz.getName()));
-//        }
+        if (RemoteClient.isProxy(instance)) {
+            throw new RuntimeException(String.format("can't register a proxy object as service [%s], this will cause dead circulation", clazz.getName()));
+        }
         this.serviceContainer.storeService(clazz, instance);
         this.server.setServiceContainer(this.serviceContainer);
     }
 
     @Override
     public void register() {
-        if (conf.isRegistry()) {
-            Provider provider = this.getProvider(conf);
-            registry.register(()->provider);
+        //TODO 测试一下注册
+        if (conf.isRpcRegisterEnabled()) {
+//            Provider provider = this.getProvider(conf);
+            registry.register(() -> this.getProvider(conf));
         }
-        //TODO 注册
     }
 
     @Override
@@ -80,7 +80,7 @@ public abstract class RemoteServer implements Server{
         provider.setName(conf.getName());
         provider.setAddress(String.format("%s:%s", conf.getRegisterIp(), conf.getPort()));
         provider.setDesc(conf.getDesc());
-        provider.setClients((int)getData("clients.active"));
+//        provider.setClients((int) getData("clients.active"));  //TODO 调方法取，不用保到etcd
         return provider;
     }
 

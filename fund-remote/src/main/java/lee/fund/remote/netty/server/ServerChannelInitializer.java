@@ -4,7 +4,6 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.timeout.IdleStateHandler;
-import lee.fund.remote.protocol.CodecAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,28 +19,26 @@ public class ServerChannelInitializer extends ChannelInitializer<Channel> {
     private final Logger logger = LoggerFactory.getLogger(ServerChannelInitializer.class);
     private final ServerConfig config;
     private final ServerHandler serverHandler;
-    private final CodecAdapter codecAdapter;
 
-    public ServerChannelInitializer(ServerHandler serverHandler,ServerConfig config) {
+    public ServerChannelInitializer(ServerHandler serverHandler, ServerConfig config) {
         this.config = config;
         this.serverHandler = serverHandler;
-        this.codecAdapter = new CodecAdapter();
     }
 
     @Override
     protected void initChannel(Channel ch) throws Exception {
         if (serverHandler.getChannelGroup().size() >= this.config.getMaxConnections()) {
-            logger.info("reach the max connections{}, close the connection", this.config.getMaxConnections());
+            logger.info("reach the max connections[{}], close the connection", this.config.getMaxConnections());
             ch.close();
             return;
         }
 
         ChannelPipeline pipeline = ch.pipeline();
         //write
-        pipeline.addLast("encode", codecAdapter.getCodecEncoder());
+        pipeline.addLast("encode", new ServerEncode());
         //read
         pipeline.addLast("idle_state", new IdleStateHandler(this.config.getKeepAliveTime(), 0, 0, TimeUnit.SECONDS));
-        pipeline.addLast("decode", codecAdapter.getCodecDecoder());
+        pipeline.addLast("decode", new ServerDecode());
         pipeline.addLast("process", serverHandler);
     }
 }

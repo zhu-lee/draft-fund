@@ -14,7 +14,6 @@ import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.Promise;
 import io.netty.util.internal.ObjectUtil;
-import lee.fund.remote.protocol.CodecAdapter;
 import lee.fund.util.execute.NamedThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +30,6 @@ import java.util.concurrent.ConcurrentMap;
 public class ClientChannelPool implements ChannelPool {
     private static final ConcurrentMap<String, ClientChannelPool> clientChannelPoolMap = new ConcurrentHashMap<>();
     private static final ClientHandler clientHandler = new ClientHandler();
-    private static final CodecAdapter codecAdapter = new CodecAdapter();
     private final FixedChannelPool pool;
 
     public ClientChannelPool(ClientConfig config) {
@@ -117,17 +115,16 @@ public class ClientChannelPool implements ChannelPool {
 
         @Override
         public void channelCreated(Channel channel) throws Exception {
-            //TODO 连接数
             if (logger.isTraceEnabled()) {
                 logger.trace("channelCreated");
             }
             ChannelPipeline channelPipe = channel.pipeline();
 
             // write
-            channelPipe.addLast("encode", codecAdapter.getCodecEncoder());
+            channelPipe.addLast("encode", new ClientEncode());
             channelPipe.addLast("idle_state", new IdleStateHandler(0, this.config.getKeepAliveTime(), 0));
             // read
-            channelPipe.addLast("decode", codecAdapter.getCodecDecoder());
+            channelPipe.addLast("decode", new ClientDecode());
             channelPipe.addLast("process", clientHandler);
         }
     }

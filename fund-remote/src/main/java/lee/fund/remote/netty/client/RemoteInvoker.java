@@ -16,7 +16,7 @@ import lee.fund.remote.protocol.RequestMessage;
 import lee.fund.remote.protocol.ResponseMessage;
 import lee.fund.util.config.AppConf;
 import lee.fund.util.lang.FaultException;
-import lee.fund.util.lang.StrKit;
+import lee.fund.util.lang.StrUtils;
 
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
@@ -49,9 +49,9 @@ public class RemoteInvoker implements Invoker {
 
     @Override
     public Object invoke(String serviceName, String method, Object[] args, Class<?> returnType) {
-        RequestMessage requestMessage = null;
-        ResponseMessage responseMessage = null;
-        String error = null;
+        RequestMessage requestMessage;
+        ResponseMessage responseMessage;
+        String error;
         SimpleClientChannel channel = null;
 
         try {
@@ -78,7 +78,7 @@ public class RemoteInvoker implements Invoker {
                 throw fault(RpcError.CLIENT_WRITE_FAILED, channelFuture.cause());
             }
 
-            //wait response
+            //waiting for response
             try {
                 responseMessage = channel.get(clientConfig.getReadTimeout());
             } catch (Exception e) {
@@ -146,7 +146,7 @@ public class RemoteInvoker implements Invoker {
 
     private FaultException fault(ResponseMessage m) {
         FaultException fe = new FaultException(m.getErrorCode(), m.getErrorInfo());
-        if (!StrKit.isBlank(m.getErrorDetail())) {
+        if (!StrUtils.isBlank(m.getErrorDetail())) {
             putRemoteError(fe, m.getErrorDetail());
         }
         putRemoteServer(fe, clientConfig);

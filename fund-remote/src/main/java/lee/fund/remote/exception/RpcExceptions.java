@@ -1,7 +1,7 @@
 package lee.fund.remote.exception;
 
 import lee.fund.remote.netty.client.ClientConfig;
-import lee.fund.util.config.ConfigProperties;
+import lee.fund.util.config.ConfProperties;
 import lee.fund.util.lang.FaultException;
 import org.apache.commons.text.TextStringBuilder;
 
@@ -36,6 +36,6 @@ public class RpcExceptions {
     }
 
     public static void putProfile(FaultException fault) {
-        fault.getData().put(PROFILE, ConfigProperties.INSTANCE.getActiveProfile());
+        fault.getData().put(PROFILE, ConfProperties.INSTANCE.getActiveProfile());
     }
 }

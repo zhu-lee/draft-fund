@@ -7,8 +7,8 @@ import lee.fund.util.lang.ClassesUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Author: zhu.li
@@ -17,12 +17,18 @@ import java.util.List;
  * Desc:
  */
 public class Application extends RemoteApplication {
-    private final Logger logger = LoggerFactory.getLogger(ClassesUtils.class);
+    private Logger logger;
     private AppServer rpcServer;
 
     public Application(Class<?> bootStrap, ServerConfiguration configuration, String[] args) {
         super(bootStrap, args, configuration);
         this.rpcServer = new AppServer(configuration);
+        this.logger = LoggerFactory.getLogger(bootStrap);
+    }
+
+    @Override
+    protected void beforeSetProperties(Map<String, Object> properties) {
+        properties.put("spring.main.web_environment", false);
     }
 
     @Override
@@ -31,17 +37,11 @@ public class Application extends RemoteApplication {
         this.rpcServer.start();
     }
 
-    public void scanService(){
-        String[] packages = new String[]{this.bootStrap.getPackage().getName() + ".iface"};
-        if (packages.length == 0) {
-            logger.info("there are no class files under the iface folder");
-        }
-
-        Arrays.stream(packages).forEach(t->{
-            List<String> serviceList = ClassesUtils.getClassListByPackage(t);
-            logger.info("there are {} class files under the iface folder",serviceList.size());
-            serviceList.forEach(this::doScanService);
-        });
+    public void scanService() {
+        String ifacePkg = this.bootStrap.getPackage().getName() + ".iface";
+        List<String> serviceList = ClassesUtils.getClassListByPackage(ifacePkg);
+        logger.info("there are {} class files under the iface folder", serviceList.size());
+        serviceList.forEach(this::doScanService);
     }
 
     private void doScanService(String serviceName) {
@@ -50,6 +50,7 @@ public class Application extends RemoteApplication {
             if (clazz.isInterface()) {
                 Object instance = getBean(clazz, true);
                 if (instance == null) {
+                    //TODO 测试该情况
                     logger.warn("not found the bean instance：[{}]", serviceName);
                 } else {
                     this.rpcServer.exposeService(clazz, instance);
@@ -61,16 +62,16 @@ public class Application extends RemoteApplication {
     }
 
     public <T> T getBean(Class<T> clazz, boolean autowire) {
-        if (this.springContext == null) {
+        if (this.applicationContext == null) {
             throw new RuntimeException("You have to wait until the application starts running");
         }
 
-        T bean = springContext.getBean(clazz);
+        T bean = applicationContext.getBean(clazz);
         if (bean == null && !clazz.isInterface()) {
             try {
                 bean = clazz.newInstance();
                 if (autowire) {
-                    springContext.getAutowireCapableBeanFactory().autowireBean(bean);
+                    applicationContext.getAutowireCapableBeanFactory().autowireBean(bean);
                 }
             } catch (Exception e) {
                 String error = String.format("create bean instance of [%s] failed", clazz.getName());

@@ -146,13 +146,15 @@ public class RemoteCoder {
             case DT_COMPRESSED_INT64_ARRAY:
             case DT_COMPRESSED_FLOAT_ARRAY:
             case DT_COMPRESSED_DOUBLE_ARRAY:
-                return decodeArry(data, false, cls);
+                return decodeArry(data, true, cls);
             case DT_COMPRESSED_PROTOBUF:
                 return decodeProto(decompress(data), cls);
             case DT_COMPRESSED_STRING:
+                return new String(decompress(data));
             case DT_COMPRESSED_BYTE_ARRAY:
-                default:
-                    throw new UncheckedException("Unknown object type：" + dataType);
+                return decompress(data);
+            default:
+                throw new UncheckedException("Unknown object type：" + dataType);
         }
     }
 
@@ -188,7 +190,7 @@ public class RemoteCoder {
     }
 
     private static <T> T decodeArry(byte[] data, boolean compressed, Class<T> cls) {
-        byte[] bytes = compressed ? deCompress(data) : data;
+        byte[] bytes = compressed ? decompress(data) : data;
         ByteBuf buf = Unpooled.wrappedBuffer(bytes);
         int length = buf.readIntLE();
         T array = (T) Array.newInstance(cls.getComponentType(), length);
@@ -201,23 +203,6 @@ public class RemoteCoder {
             Array.set(array, i, item);
         }
         return array;
-    }
-
-    private static byte[] deCompress(byte[] bytes) {
-        try (ByteArrayInputStream input = new ByteArrayInputStream(bytes, 4, bytes.length - 4);
-             GZIPInputStream gzip = new GZIPInputStream(input);
-             ByteArrayOutputStream out = new ByteArrayOutputStream()
-        ) {
-            int count;
-            byte[] buffer = new byte[BUFFER_SIZE];
-            while ((count = gzip.read(buffer)) >= 0) {
-                out.write(buffer, 0, count);
-            }
-            out.flush();
-            return out.toByteArray();
-        } catch (Exception e) {
-            throw new UncheckedException(e);
-        }
     }
 
     private static RemoteValue encode(Double[] array) {

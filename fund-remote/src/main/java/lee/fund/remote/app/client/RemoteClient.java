@@ -5,7 +5,9 @@ import lee.fund.remote.container.ServiceInfo;
 import lee.fund.remote.container.ServiceMeta;
 import lee.fund.remote.exception.RpcError;
 import lee.fund.remote.exception.RpcException;
+import lee.fund.remote.exception.RpcExceptions;
 import lee.fund.remote.netty.client.Invoker;
+import lee.fund.remote.netty.client.RemoteInvoker;
 import lee.fund.remote.netty.client.RemoteInvokerFactory;
 import lee.fund.remote.registry.JetcdRegistry;
 import lee.fund.remote.registry.Provider;
@@ -63,15 +65,16 @@ public final class RemoteClient {
                 return method.invoke(this, args);
             }
             ServiceInfo.MethodInfo methodInfo = methodMap.get(method.getName());
-            if (methodInfo==null) {
+            if (methodInfo == null) {
                 return method.invoke(this, args);
             }
             return callExecutor.doInvoke(serviceName, methodInfo, args, method.getReturnType());
         }
     }
 
+    //remote call executor
     private static class RemoteCallExecutor {
-        private static final ConcurrentMap<String, RemoteCallExecutor> recMap = new ConcurrentHashMap<>();
+        private static final ConcurrentMap<String, RemoteCallExecutor> remoteCallExecutorMap = new ConcurrentHashMap<>();
         private static final JetcdRegistry jetcdRegistry = JetcdRegistry.getInstance();
         private List<Invoker> invokers = new ArrayList<>();
         private final String server;
@@ -84,31 +87,50 @@ public final class RemoteClient {
             this.server = server;
             if (AppConf.instance().getConSumerConfs().containsKey(server)) {
                 this.clientConf = new ClientConfiguration(AppConf.instance().getConSumerConfs().get(server));
-                this.maxRetry = this.clientConf.getMaxRetry()==0?1:this.clientConf.getMaxRetry();
+                this.maxRetry = this.clientConf.getMaxRetry();
             }
             this.invokerBalancer = InvokerBalancer.get(null);
         }
 
         public static RemoteCallExecutor get(String server) {
-            return recMap.computeIfAbsent(server, RemoteCallExecutor::new);
+            return remoteCallExecutorMap.computeIfAbsent(server, RemoteCallExecutor::new);
         }
 
         public Object doInvoke(String serviceName, ServiceInfo.MethodInfo methodInfo, Object[] args, Class<?> returnType) {
             List<Invoker> invokers = this.getInvokers();
-            List<FaultException> faults = new ArrayList<>();
-            for(int i=0;i<maxRetry;i++) {
-                Invoker invoker = this.invokerBalancer.select(invokers);
+            Invoker selInvoke = this.invokerBalancer.select(invokers);
+            List<FaultException> faults;
+            try {
+                return selInvoke.invoke(serviceName, methodInfo.getName(), args, returnType);
+            } catch (FaultException e) {
+                if (methodInfo.getFailMode() == FailModeEnum.FailFast
+                        || invokers.size() == 1 || this.maxRetry == 0) {
+                    throw e;
+                }
+                faults = new ArrayList<>(invokers.size());
+                faults.add(e);
+            }
+
+            int i = 1;
+            for (Invoker invoker : invokers) {
+                if (invoker == selInvoke) {
+                    continue;
+                }
+                i++;
                 try {
                     return invoker.invoke(serviceName, methodInfo.getName(), args, returnType);
                 } catch (FaultException e) {
-                    if (methodInfo.getFailMode() == FailModeEnum.FailFast || invokers.size() == 1 || this.maxRetry == 1) {
-                        throw e;
-                    }
-                    //TODO 应用异常处理
                     faults.add(e);
                 }
+                if (i > maxRetry) {
+                    break;
+                }
             }
-            return faults;
+
+            RpcError rpcError = RpcError.CLIENT_ALL_NODES_FAILED;
+            FaultException fex = new FaultException(rpcError.getCode(), String.format(rpcError.description(), serviceName, methodInfo.getName()));
+            RpcExceptions.putNodeFaults(fex, faults);
+            throw fex;
         }
 
         public List<Invoker> getInvokers() {
@@ -145,6 +167,10 @@ public final class RemoteClient {
             }
         }
 
+        /**
+         * providers有变时，更新
+         * @param providers
+         */
         private void genInvokers(List<Provider> providers) {
             invokers = providers.stream().map(t -> {
                 ClientConfiguration clientConfiguration;
@@ -160,5 +186,13 @@ public final class RemoteClient {
         private Invoker createInvoke(ClientConfiguration clientConf) {
             return RemoteInvokerFactory.getRemoteInvoker(clientConf);
         }
+    }
+
+    //is rpc proxy
+    public static boolean isProxy(Object instance) {
+        if (Proxy.isProxyClass(instance.getClass())) {
+            return Proxy.getInvocationHandler(instance) instanceof RemoteInvoker;
+        }
+        return false;
     }
 }

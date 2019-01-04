@@ -61,7 +61,7 @@ public class NettyServer extends ServerBootstrap {
         this.childOption(ChannelOption.CONNECT_TIMEOUT_MILLIS, serverConfig.getConnectTimeout());
         this.childOption(ChannelOption.SO_RCVBUF, serverConfig.getReceiveBufSize());
         this.childOption(ChannelOption.SO_SNDBUF, serverConfig.getSendBufSize());
-        this.childHandler(new ServerChannelInitializer(this.serverHandler,serverConfig));
+        this.childHandler(new ServerChannelInitializer(this.serverHandler, serverConfig));
 
         this.initPoolExecutor();
     }

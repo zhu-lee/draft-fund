@@ -33,7 +33,7 @@ public class JetcdUtils {
     private static Client client;
     private static KV kvClient;
     private static Lease leaseClient;
-    private static long leaseId;
+    private static long leaseId;//租约id，注册服务到etcd上时，使用该租约
     private static final int TTL = 15;
 
     static {
@@ -54,7 +54,7 @@ public class JetcdUtils {
                 kvClient = client.getKVClient();
                 leaseClient = client.getLeaseClient();
                 leaseId = client.getLeaseClient().grant(TTL).get(TTL, TimeUnit.SECONDS).getID();
-                keepAlive();
+                keepAlive();//续租
             } catch (Exception e) {
                 throw new UncheckedException(e);
             }
@@ -143,6 +143,11 @@ public class JetcdUtils {
         return watcher;
     }
 
+    /**
+     * TODO 租约设置长点，减少频繁续约
+     * 保持client与etcd的联系，快要超时，马上就行续租。
+     * 当户端掉线或者关闭后，keepAlive将不会继续续租，TTL后，租约到期，节点就会被删除
+     */
     private static void keepAlive() {
         Executors.newSingleThreadExecutor(new NamedThreadFactory("KeepAlive")).execute(() -> {
             try {

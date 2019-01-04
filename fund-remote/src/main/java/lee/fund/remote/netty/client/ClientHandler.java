@@ -39,7 +39,8 @@ public class ClientHandler extends SimpleChannelInboundHandler<ResponseMessage> 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         ResponseMessage responseMessage = ResponseMessage.failed(cause);
-//        ctx.channel(). TODO 处理
+        SimpleClientChannel channel = (SimpleClientChannel) ctx.channel();
+        channel.set(responseMessage);
         logger.error("unknown client error", cause);
         ctx.close();
     }

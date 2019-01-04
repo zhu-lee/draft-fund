@@ -24,7 +24,7 @@ public class ServerConfiguration {
     private final Logger logger = LoggerFactory.getLogger(ServerConfiguration.class);
     private String name;
     private int port;
-    private boolean registry;
+    private boolean isRpcRegisterEnabled;
     private int connections;
     private String desc;
     private boolean debug;
@@ -33,25 +33,25 @@ public class ServerConfiguration {
     private String registerIp;
 
     public ServerConfiguration() {
-        ServerConf serConf = AppConf.instance().getServerConf();
-        GlobalConf glabConf = AppConf.instance().getGlobalConf();
+        ServerConf serverConf = AppConf.instance().getServerConf();
+        GlobalConf globalConf = AppConf.instance().getGlobalConf();
 
-        requireNonNull(serConf.getName(),"server name is empty");
-        this.name = serConf.getName();
-        requireNonNull(serConf.getPort(), "server port is empty");
-        this.port = serConf.getPort();
-        requireNonNull(glabConf.getRpcRegisterIp(), "register ip is empty");
-        this.registerIp = glabConf.getRpcRegisterIp();
+        requireNonNull(serverConf.getName(), "server name is empty");
+        this.name = serverConf.getName();
+        requireNonNull(serverConf.getPort(), "server port is empty");
+        this.port = serverConf.getPort();
+        requireNonNull(globalConf.getRpcRegisterIp(), "register ip is empty");
+        this.registerIp = globalConf.getRpcRegisterIp();
 
-        this.registry = glabConf.isRpcRegisterEnabled();
+        this.isRpcRegisterEnabled = globalConf.isRpcRegisterEnabled();
 
-        this.desc = Strings.isNullOrEmpty(serConf.getDesc()) ? serConf.getName() : serConf.getDesc();
-        if (serConf.getOption().getConnections() > 0) {
-            this.connections = serConf.getOption().getConnections();
+        this.desc = Strings.isNullOrEmpty(serverConf.getDesc()) ? serverConf.getName() : serverConf.getDesc();
+        if (serverConf.getOption().getConnections() > 0) {
+            this.connections = serverConf.getOption().getConnections();
         }
-        this.debug = serConf.getOption().isDebug();
-        this.monitorEnabled = serConf.getOption().isMonitorEnabled();
-        this.monitorPort = serConf.getOption().getMonitorPort();
+        this.debug = serverConf.getOption().isDebug();
+        this.monitorEnabled = serverConf.getOption().isMonitorEnabled();
+        this.monitorPort = serverConf.getOption().getMonitorPort();
     }
 
     private void requireNonNull(Object va, String str) {

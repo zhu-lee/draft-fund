@@ -2,7 +2,7 @@ package lee.fund.remote.util;
 
 import lee.fund.remote.annotation.RpcMethod;
 import lee.fund.remote.app.NamingConvertEnum;
-import lee.fund.util.lang.StrKit;
+import lee.fund.util.lang.StrUtils;
 
 import java.lang.reflect.Method;
 import java.util.Optional;
@@ -22,7 +22,7 @@ public class MethodUtils {
 
     public static String getMethodName(Method method, NamingConvertEnum convert, Optional<RpcMethod> mdOptional) {
         String name = mdOptional.map(o->o.name()).orElse(null);
-        if (StrKit.isBlank(name)) {
+        if (StrUtils.isBlank(name)) {
             name = NamingConvertEnum.transform(method.getName(), convert);
         }
         return name;

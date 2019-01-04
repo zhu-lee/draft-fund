@@ -39,9 +39,7 @@ public class ClientConfiguration {
         if (csumConf.getOption().getMaxConnections() > 0) {
             this.maxConnections = csumConf.getOption().getMaxConnections();
         }
-        if (csumConf.getOption().getMaxRetry() > 0) {
-            this.maxRetry = csumConf.getOption().getMaxRetry();
-        }
+        this.maxRetry = csumConf.getOption().getMaxRetry();
     }
 
     public ClientConfiguration(Provider provider) {

@@ -2,7 +2,6 @@ package lee.fund.remote.netty.server;
 
 import lee.fund.remote.app.server.ServerConfiguration;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.net.InetSocketAddress;
 
@@ -26,7 +25,6 @@ public class ServerConfig {
 
     public ServerConfig(ServerConfiguration cfg) {
         this.bindAddress = new InetSocketAddress(cfg.getPort());
-        //TODO empty check
         this.maxConnections = cfg.getConnections() > 0 ? cfg.getConnections() : this.maxConnections;
     }
 }

@@ -18,8 +18,6 @@ package lee.fund.pbf.a3.descriptor;
 import lee.fund.util.lang.EnumValueSupport;
 
 /**
- * TODO
- *
  * @author xiemalin
  * @since 2.0.1
  */

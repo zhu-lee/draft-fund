@@ -37,15 +37,15 @@ public class JetcdRegistry {
     }
 
     public void register(Supplier<Provider> supplier) {
-        //TODO 这里用更新呢？无意义
-        Cycle.set(() -> {
+        //TODO 这里用定时更新呢，无意义
+//        Cycle.set(() -> {
             Provider provider = supplier.get();
             if (provider == null) {
                 logger.error("register failed: supplier return null");
             } else {
                 this.register(provider);
             }
-        }, 0, TTL_SECONDS * 1000L);
+//        }, 0, TTL_SECONDS * 1000L);
     }
 
     private void register(Provider provider) {

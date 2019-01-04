@@ -3,6 +3,9 @@ package lee.fund.remote.registry;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Author: zhu.li
  * Since:  jdk 1.8
@@ -18,5 +21,6 @@ public class Provider {
     private String version;
     private String desc;
     private int clients;
+    private Map<String, Object> options;
     private int flag;
 }

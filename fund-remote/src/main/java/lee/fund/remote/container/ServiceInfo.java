@@ -5,7 +5,7 @@ import lee.fund.remote.annotation.RpcParameter;
 import lee.fund.remote.app.FailModeEnum;
 import lee.fund.remote.app.NamingConvertEnum;
 import lee.fund.remote.util.MethodUtils;
-import lee.fund.util.lang.StrKit;
+import lee.fund.util.lang.StrUtils;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -39,7 +39,7 @@ public class ServiceInfo {
             MethodInfo mi = new MethodInfo();
             mi.name = MethodUtils.getMethodName(m, convert, mdOptional);
             mi.description = mdOptional.map(o -> o.description()).orElse(StringUtils.EMPTY);
-            mi.returnPiInfo = getReturn(m);
+            mi.returnType = getReturn(m);
             mi.parameters = getParameters(m);
             mi.failMode = mdOptional.map(o -> o.failMode()).orElse(FailModeEnum.FailOver);
             this.methodMap.put(mi.name, mi);
@@ -49,7 +49,7 @@ public class ServiceInfo {
     private static List<ParameterInfo> getParameters(Method method) {
         List<ParameterInfo> list = Arrays.stream(method.getParameters()).map(p -> {
             ParameterInfo pi = getParameter(p.getType(), p.getAnnotation(RpcParameter.class));
-            if (StrKit.isBlank(pi.name)) {
+            if (StrUtils.isBlank(pi.name)) {
                 pi.name = p.getName();
             }
             return pi;
@@ -80,7 +80,7 @@ public class ServiceInfo {
         private String name;// 名称
         private String description;// 描述
         private List<ParameterInfo> parameters;// 参数列表
-        private ParameterInfo returnPiInfo;// 返回值
+        private ParameterInfo returnType;// 返回值
         private FailModeEnum failMode;//失败处理模式
     }
 

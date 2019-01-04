@@ -38,7 +38,7 @@ public class ConfigUtils {
         return null;
     }
 
-    private static String getEtcFolder() {
+    public static String getEtcFolder() {
         if (Strings.isNullOrEmpty(etcFolder)) {
             URL etcUrl = Thread.currentThread().getContextClassLoader().getResource("etc");
             if (etcUrl == null) {

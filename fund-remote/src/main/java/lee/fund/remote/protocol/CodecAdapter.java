@@ -1,12 +1,9 @@
 package lee.fund.remote.protocol;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.ByteToMessageDecoder;
-import io.netty.handler.codec.MessageToByteEncoder;
-import lombok.Getter;
+import lee.fund.pbf.a3.Codec;
+import lee.fund.pbf.build.CodecFactory;
 
-import java.util.List;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Author: zhu.li
@@ -14,24 +11,11 @@ import java.util.List;
  * Date:   Created in 2018/12/13 19:31
  * Desc:
  */
-@Getter
-public class CodecAdapter {
-    private final CodecEncoder codecEncoder = new CodecEncoder();
-    private final CodecDecoder codecDecoder = new CodecDecoder();
+public interface CodecAdapter {
+    byte[] RESPONSE_HEADER = "ResponseMessage ".getBytes(StandardCharsets.US_ASCII);
+    byte[] CRLF = new byte[]{'\r', '\n'};
+    Codec<ResponseMessage> RESPONSE_MESSAGE_CODEC = CodecFactory.get(ResponseMessage.class);
 
-    private static class CodecEncoder extends MessageToByteEncoder<ResponseMessage> {
-
-        @Override
-        protected void encode(ChannelHandlerContext ctx, ResponseMessage msg, ByteBuf byteBuf) throws Exception {
-
-        }
-    }
-
-    private class CodecDecoder extends ByteToMessageDecoder{
-
-        @Override
-        protected void decode(ChannelHandlerContext ctx, ByteBuf byteBuf, List<Object> list) throws Exception {
-
-        }
-    }
+    byte[] REQUEST_HEADER = "RequestMessage ".getBytes(StandardCharsets.US_ASCII);
+    Codec<RequestMessage> REQUEST_MESSAGE_CODEC = CodecFactory.get(RequestMessage.class);
 }

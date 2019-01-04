@@ -10,8 +10,10 @@ import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.concurrent.GlobalEventExecutor;
 import lee.fund.remote.container.MethodExecutor;
 import lee.fund.remote.container.ServiceContainer;
+import lee.fund.remote.context.RpcContext;
 import lee.fund.remote.exception.RpcError;
 import lee.fund.remote.exception.RpcException;
+import lee.fund.remote.protocol.RemoteCoder;
 import lee.fund.remote.protocol.RemoteValue;
 import lee.fund.remote.protocol.RequestMessage;
 import lee.fund.remote.protocol.ResponseMessage;
@@ -96,6 +98,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<RequestMessage> {
         public void run() {
             ResponseMessage responseMessage;
             try {
+                RpcContext.set(requestMessage.getContextID(), requestMessage.getMessageID());
                 MethodExecutor executor = container.getExecutor(requestMessage.getServiceName(), requestMessage.getMethodName());
                 if (executor == null) {
                     throw new RpcException(RpcError.SERVER_SERVICE_NOT_FOUND, requestMessage.getServiceName(), requestMessage.getMethodName());
@@ -107,6 +110,8 @@ public class ServerHandler extends SimpleChannelInboundHandler<RequestMessage> {
             } catch (Exception e) {
                 responseMessage = ResponseMessage.failed(e);
                 logger.error("request processing failed", e);
+            }finally {
+                RpcContext.remove();
             }
             channel.writeAndFlush(responseMessage);
         }
@@ -118,8 +123,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<RequestMessage> {
             Object[] args = new Object[values.size()];
             for (int i = 0; i < args.length; i++) {
                 RemoteValue value = values.get(i);
-                //TODO 实现decode
-//                args[i] = SimpleEncoder.decode(value.getDataType(), value.getData(), types[i]);
+                args[i] = RemoteCoder.decode(value.getDataType(), value.getData(), types[i]);
             }
             return args;
         }

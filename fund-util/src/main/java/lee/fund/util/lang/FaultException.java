@@ -141,7 +141,7 @@ public class FaultException extends RuntimeException {
             data.forEach((k, v) -> sb.append(k).append(": ").append(v).appendNewLine());
             return sb.toString();
         }
-        return StrKit.empty;
+        return StrUtils.empty;
     }
 
 

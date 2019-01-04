@@ -3,7 +3,7 @@ package lee.fund.remote.protocol;
 import lee.fund.remote.exception.RpcError;
 import lee.fund.remote.exception.RpcException;
 import lee.fund.util.lang.FaultException;
-import lee.fund.util.lang.StrKit;
+import lee.fund.util.lang.StrUtils;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -34,8 +34,7 @@ public class ResponseMessage {
         ResponseMessage message = new ResponseMessage();
         message.setServerTime(System.currentTimeMillis());
         message.setSuccess(true);
-        //TODO SimpleEncoder
-//        message.setResult(SimpleEncoder.encode(result));
+        message.setResult(RemoteCoder.encode(result));
         return message;
     }
 
@@ -51,15 +50,11 @@ public class ResponseMessage {
             message.setErrorCode(RpcError.SERVER_UNKNOWN_ERROR.value());
         }
 
-        message.setErrorInfo(e.getMessage());
-        if (StrKit.isBlank(message.getErrorInfo())) {
-            message.setErrorInfo(e.toString());
-        }
+        message.setErrorInfo(StrUtils.isBlank(e.getMessage()) ? e.toString() : e.getMessage());
         //TODO setErrorDetail
 //        if (AppConfig.getDefault().isDebugEnabled()) {
 //            message.setErrorDetail(Exceptions.getStackTrace(e));
 //        }
-
         return message;
     }
 

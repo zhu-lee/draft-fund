@@ -26,7 +26,6 @@ import java.io.OutputStream;
 public interface Compiler {
 
     /**
-     * TODO
      * @param code Java source code
      * @param classLoader current classloader
      * @param os target output compiled byte code
