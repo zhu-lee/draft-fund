@@ -54,7 +54,6 @@ public abstract class RemoteServer implements Server {
     public void register() {
         //TODO 测试一下注册
         if (conf.isRpcRegisterEnabled()) {
-//            Provider provider = this.getProvider(conf);
             registry.register(() -> this.getProvider(conf));
         }
     }

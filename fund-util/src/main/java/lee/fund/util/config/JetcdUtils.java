@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
  * Author: zhu.li
  * Since:  jdk 1.8
  * Date:   Created in 2018/12/7 15:32
- * Desc:
+ * Desc:   
  */
 public class JetcdUtils {
     private static final Logger logger = LoggerFactory.getLogger(JetcdUtils.class);

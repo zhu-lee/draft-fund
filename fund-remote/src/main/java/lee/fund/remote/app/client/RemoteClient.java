@@ -12,6 +12,7 @@ import lee.fund.remote.netty.client.RemoteInvokerFactory;
 import lee.fund.remote.registry.JetcdRegistry;
 import lee.fund.remote.registry.Provider;
 import lee.fund.util.config.AppConf;
+import lee.fund.util.config.ClientConf;
 import lee.fund.util.lang.FaultException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,8 +86,9 @@ public final class RemoteClient {
 
         public RemoteCallExecutor(String server) {
             this.server = server;
-            if (AppConf.instance().getConSumerConfs().containsKey(server)) {
-                this.clientConf = new ClientConfiguration(AppConf.instance().getConSumerConfs().get(server));
+            Map<String, ClientConf> clientConfMap = AppConf.instance().getClientConfMap();
+            if (clientConfMap.containsKey(server)) {
+                this.clientConf = new ClientConfiguration(clientConfMap.get(server));
                 this.maxRetry = this.clientConf.getMaxRetry();
             }
             this.invokerBalancer = InvokerBalancer.get(null);
@@ -169,6 +171,7 @@ public final class RemoteClient {
 
         /**
          * providers有变时，更新
+         *
          * @param providers
          */
         private void genInvokers(List<Provider> providers) {

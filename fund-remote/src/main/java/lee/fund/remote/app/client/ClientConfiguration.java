@@ -2,7 +2,7 @@ package lee.fund.remote.app.client;
 
 import com.google.common.base.Strings;
 import lee.fund.remote.registry.Provider;
-import lee.fund.util.config.ConSumerConf;
+import lee.fund.util.config.ClientConf;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,7 +25,7 @@ public class ClientConfiguration {
     private int maxConnections;
     private int maxRetry;
 
-    public ClientConfiguration(ConSumerConf csumConf) {
+    public ClientConfiguration(ClientConf csumConf) {
         requireNonNull(csumConf.getName(), "name");
         this.name = csumConf.getName();
         requireNonNull(csumConf.getAddress(), "address");

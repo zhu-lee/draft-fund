@@ -13,14 +13,14 @@ import org.apache.commons.lang3.StringUtils;
  */
 @Setter(AccessLevel.PROTECTED)
 @Getter
-public class ConSumerConf {
+public class ClientConf {
     private String name = StringUtils.EMPTY;
     private String address = StringUtils.EMPTY;
     private boolean discovery;
     private String desc = StringUtils.EMPTY;
     private Option option;
 
-    public ConSumerConf() {
+    public ClientConf() {
         this.option = new Option();
     }
 

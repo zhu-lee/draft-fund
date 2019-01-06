@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class AppConf {
     private ServerConf serverConf;
     private GlobalConf globalConf;
-    private Map<String, ConSumerConf> conSumerConfs = new HashMap<>();
+    private Map<String, ClientConf> clientConfMap = new HashMap<>();
 
     private AppConf() {
         this.loadAppConf();
@@ -28,7 +28,7 @@ public class AppConf {
     }
 
     private void loadAppConf() {
-        String fileName = "app-config.xml";
+        String fileName = "server-config.xml";
         String filePath = ConfigUtils.searchConf(fileName);
         if (filePath == null) {
             ConsoleLogger.info("config > not found %s", fileName);
@@ -78,7 +78,7 @@ public class AppConf {
     }
 
     private void loadCsumConf() {
-        String fileName = "consumer-config.xml";
+        String fileName = "client-config.xml";
         String filePath = ConfigUtils.searchConf(fileName);
         if (filePath == null) {
             ConsoleLogger.info("config > not found %s", fileName);
@@ -88,9 +88,9 @@ public class AppConf {
         ConsoleLogger.info("config > found %s", filePath);
         Map<String, Object> xmlMap = XmlUtils.parseMultiMap(filePath);
         Optional.ofNullable(xmlMap).ifPresent(t ->
-                conSumerConfs = t.entrySet().stream().map(e -> {
+                clientConfMap = t.entrySet().stream().map(e -> {
                     Map<String, Object> serMap = (Map<String, Object>) e.getValue();
-                    ConSumerConf csumConf = new ConSumerConf();
+                    ClientConf csumConf = new ClientConf();
                     Optional.ofNullable(serMap.get("name")).ifPresent(o -> csumConf.setName(o.toString()));
                     Optional.ofNullable(serMap.get("address")).ifPresent(o -> csumConf.setAddress(o.toString()));
                     Optional.ofNullable(serMap.get("discovery")).ifPresent(o -> csumConf.setDiscovery(Boolean.parseBoolean(o.toString())));
@@ -102,7 +102,7 @@ public class AppConf {
                         Optional.ofNullable(opMap.get("maxRetry")).ifPresent(o -> csumConf.getOption().setMaxRetry(Integer.parseInt(o.toString())));
                     });
                     return csumConf;
-                }).collect(Collectors.toMap(m -> ((ConSumerConf) m).getName(), m -> (ConSumerConf) m))
+                }).collect(Collectors.toMap(m -> ((ClientConf) m).getName(), m -> (ClientConf) m))
         );
     }
 

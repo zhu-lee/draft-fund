@@ -6,6 +6,14 @@
         <option name="monitor_enabled" vlue="true"/>
         <option name="monitor_port" vlue="19628"/>
     </server>
+
+    <!--msg不需要配置port、option.connections-->
+    <!--<server name="fund-example" desc="fund-example服务">
+        <option name="debug" vlue="true"/>
+        <option name="monitor_enabled" vlue="true"/>
+        <option name="monitor_port" vlue="19628"/>
+    </server>-->
+
     <custom>
         <option name="cache.redis.name" value="mtime.cinema.subsidy.service"/>
         <option name="templateCodeAdminAdd" value="54"/>

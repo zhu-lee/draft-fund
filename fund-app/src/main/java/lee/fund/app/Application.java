@@ -18,11 +18,11 @@ import java.util.Map;
  */
 public class Application extends RemoteApplication {
     private Logger logger;
-    private AppServer rpcServer;
+    private AppServer appServer;
 
     public Application(Class<?> bootStrap, ServerConfiguration configuration, String[] args) {
         super(bootStrap, args, configuration);
-        this.rpcServer = new AppServer(configuration);
+        this.appServer = new AppServer(configuration);
         this.logger = LoggerFactory.getLogger(bootStrap);
     }
 
@@ -34,7 +34,7 @@ public class Application extends RemoteApplication {
     @Override
     protected void load() {
         this.scanService();
-        this.rpcServer.start();
+        this.appServer.start();
     }
 
     public void scanService() {
@@ -53,7 +53,7 @@ public class Application extends RemoteApplication {
                     //TODO 测试该情况
                     logger.warn("not found the bean instance：[{}]", serviceName);
                 } else {
-                    this.rpcServer.exposeService(clazz, instance);
+                    this.appServer.exposeService(clazz, instance);
                 }
             }
         } catch (Exception e) {
@@ -63,11 +63,11 @@ public class Application extends RemoteApplication {
 
     public <T> T getBean(Class<T> clazz, boolean autowire) {
         if (this.applicationContext == null) {
-            throw new RuntimeException("You have to wait until the application starts running");
+            throw new RuntimeException("you have to wait until the application starts running");
         }
 
         T bean = applicationContext.getBean(clazz);
-        if (bean == null && !clazz.isInterface()) {
+        if (bean == null && !clazz.isInterface()) {//TODO Maybe there's no need to judge
             try {
                 bean = clazz.newInstance();
                 if (autowire) {
