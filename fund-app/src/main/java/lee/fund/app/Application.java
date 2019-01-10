@@ -4,8 +4,6 @@ package lee.fund.app;
 import lee.fund.remote.app.server.RemoteApplication;
 import lee.fund.remote.app.server.ServerConfiguration;
 import lee.fund.util.lang.ClassesUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
@@ -17,13 +15,11 @@ import java.util.Map;
  * Desc:
  */
 public class Application extends RemoteApplication {
-    private Logger logger;
     private AppServer appServer;
 
     public Application(Class<?> bootStrap, ServerConfiguration configuration, String[] args) {
         super(bootStrap, args, configuration);
         this.appServer = new AppServer(configuration);
-        this.logger = LoggerFactory.getLogger(bootStrap);
     }
 
     @Override

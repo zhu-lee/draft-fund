@@ -33,8 +33,8 @@ public class ServerConfiguration {
     private String registerIp;
 
     public ServerConfiguration() {
-        ServerConf serverConf = AppConf.instance().getServerConf();
-        GlobalConf globalConf = AppConf.instance().getGlobalConf();
+        ServerConf serverConf = AppConf.INSTANCE.getServerConf();
+        GlobalConf globalConf = AppConf.INSTANCE.getGlobalConf();
 
         requireNonNull(serverConf.getName(), "server name is empty");
         this.name = serverConf.getName();

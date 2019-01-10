@@ -20,7 +20,9 @@ public class AppConf {
     private ServerConf serverConf;
     private GlobalConf globalConf;
     private Map<String, ClientConf> clientConfMap = new HashMap<>();
+    public static final AppConf INSTANCE = new AppConf();
 
+    //TODO 打印出加载的基础文件文件，在springboot(reimoteApplictaion)加载时打印出etc下面的文件
     private AppConf() {
         this.loadAppConf();
         this.loadGolobalConf();
@@ -104,17 +106,5 @@ public class AppConf {
                     return csumConf;
                 }).collect(Collectors.toMap(m -> ((ClientConf) m).getName(), m -> (ClientConf) m))
         );
-    }
-
-    public static AppConf instance() {
-        return Holder.instance;
-    }
-
-    private static class Holder {
-        private static AppConf instance;
-
-        static {
-            instance = new AppConf();
-        }
     }
 }

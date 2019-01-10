@@ -10,9 +10,9 @@ import lee.fund.remote.netty.client.Invoker;
 import lee.fund.remote.netty.client.RemoteInvoker;
 import lee.fund.remote.netty.client.RemoteInvokerFactory;
 import lee.fund.remote.registry.JetcdRegistry;
-import lee.fund.remote.registry.Provider;
 import lee.fund.util.config.AppConf;
 import lee.fund.util.config.ClientConf;
+import lee.fund.util.jetcd.Provider;
 import lee.fund.util.lang.FaultException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,7 +86,7 @@ public final class RemoteClient {
 
         public RemoteCallExecutor(String server) {
             this.server = server;
-            Map<String, ClientConf> clientConfMap = AppConf.instance().getClientConfMap();
+            Map<String, ClientConf> clientConfMap = AppConf.INSTANCE.getClientConfMap();
             if (clientConfMap.containsKey(server)) {
                 this.clientConf = new ClientConfiguration(clientConfMap.get(server));
                 this.maxRetry = this.clientConf.getMaxRetry();

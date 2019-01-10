@@ -10,17 +10,17 @@ import java.util.concurrent.TimeUnit;
  * Date:   Created in 2018/12/10 9:26
  * Desc:
  */
-public class Cycle {
-    private static ScheduledExecutorService executor = Executors.newScheduledThreadPool(5, new NamedThreadFactory("Cycle"));
+public class Schedule {
+    private static ScheduledExecutorService executor = Executors.newScheduledThreadPool(5, new NamedThreadFactory("Schedule"));
 
-    private Cycle() {
+    private Schedule() {
     }
 
     public static void set(Runnable r, long delay) {
         executor.schedule(r, delay, TimeUnit.MILLISECONDS);
     }
 
-    public static void set(Runnable r,long initialDelay, long delay) {
+    public static void set(Runnable r, long initialDelay, long delay) {
         if (delay > 0) {
             executor.scheduleWithFixedDelay(r, initialDelay, delay, TimeUnit.MILLISECONDS);
         } else {

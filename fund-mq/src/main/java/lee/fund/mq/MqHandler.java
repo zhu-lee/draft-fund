@@ -7,5 +7,5 @@ package lee.fund.mq;
  * Desc:
  */
 public interface MqHandler {
-    void
+    void handler(Msg msg);
 }

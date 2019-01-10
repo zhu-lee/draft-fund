@@ -1,7 +1,7 @@
 package lee.fund.remote.app.client;
 
 import com.google.common.base.Strings;
-import lee.fund.remote.registry.Provider;
+import lee.fund.util.jetcd.Provider;
 import lee.fund.util.config.ClientConf;
 import lombok.AccessLevel;
 import lombok.Getter;

@@ -16,6 +16,7 @@
     <module>fund-app</module>
     <module>fund-pbf</module>
     <module>example</module>
+    <module>fund-web</module>
   </modules>
 
   <!--版本变量-->
@@ -44,7 +45,8 @@
     <asm.version>7.0</asm.version>
     <protoparser.version>4.0.3</protoparser.version>
     <commons-text.version>1.6</commons-text.version>
-    <nsq-client.version>1.0.0.RC4</nsq-client.version>
+    <nsq-client.version>1.0.0.RC4-M2</nsq-client.version>
+    <http-request.version>6.0</http-request.version>
   </properties>
   <!--依赖管理-->
   <dependencyManagement>
@@ -164,6 +166,11 @@
         <groupId>com.github.brainlag</groupId>
         <artifactId>nsq-client</artifactId>
         <version>${nsq-client.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.github.kevinsawicki</groupId>
+        <artifactId>http-request</artifactId>
+        <version>${http-request.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

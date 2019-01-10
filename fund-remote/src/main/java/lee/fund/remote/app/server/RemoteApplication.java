@@ -23,11 +23,11 @@ import java.util.stream.Collectors;
 public abstract class RemoteApplication {
     protected SpringApplication springApplication;
     protected Class<?> bootStrap;
+    protected String[] args;
+    protected ServerConfiguration serverConfiguration;
     protected Logger logger;
     protected ApplicationContext applicationContext;
     protected LocalDateTime startTime;
-    protected String[] args;
-    protected ServerConfiguration serverConfiguration;
 
     public RemoteApplication(Class<?> bootStrap, String[] args, ServerConfiguration serverConfiguration) {
         Objects.requireNonNull(bootStrap, "bootClass can't be null");
@@ -62,7 +62,18 @@ public abstract class RemoteApplication {
 
     private void setProperties() {
         Map<String, Object> properties = new HashMap<>();
-        properties.put("spring.main.show-banner", false);
+
+        //TODO 从d:/etc读取统一的日志模板
+
+        // log4j2 config
+//        String configPath = ConfigManager.findConfigPath("log4j2.xml");
+//        if (configPath != null) {
+//            properties.put("logging.config", configPath);
+//        }
+
+        // hidden welcome banner
+        properties.put("spring.main.banner-mode", "off");
+
         String profile = ConfProperties.INSTANCE.getActiveProfile();
         if (StrUtils.notBlank(profile)) {
             properties.put("spring.profiles.active", profile);
@@ -81,7 +92,7 @@ public abstract class RemoteApplication {
     }
 
     protected void beforeSetProperties(Map<String, Object> properties) {
-        // child to extend
+        //subclass to inject
     }
 
     public void run() {
@@ -91,11 +102,13 @@ public abstract class RemoteApplication {
         this.startMonitor();
     }
 
-    protected abstract void load();
+    protected void load() {
+        //subclass to inject
+    }
 
     private void startMonitor() {
         try {
-            if (serverConfiguration.isMonitorEnabled() && serverConfiguration.getMonitorPort() > 0) {
+            if (serverConfiguration != null && serverConfiguration.isMonitorEnabled() && serverConfiguration.getMonitorPort() > 0) {
                 HttpMonitor monitor = new HttpMonitor(new InetSocketAddress(serverConfiguration.getMonitorPort()), false);
                 setMonitor(monitor);
                 monitor.start();
@@ -107,6 +120,6 @@ public abstract class RemoteApplication {
     }
 
     protected void setMonitor(HttpMonitor monitor) {
-        //TODO custom monitor
+        //TODO subclass to inject
     }
 }

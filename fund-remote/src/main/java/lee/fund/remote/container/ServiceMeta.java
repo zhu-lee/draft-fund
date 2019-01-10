@@ -19,6 +19,7 @@ import java.util.concurrent.ConcurrentMap;
 public class ServiceMeta {
     private static final ConcurrentMap<Class<?>, ServiceInfo> svcMetaMap = new ConcurrentHashMap<>();
     private static ServiceMeta instance = new ServiceMeta();
+
     private ServiceMeta() {
     }
 
@@ -27,7 +28,7 @@ public class ServiceMeta {
     }
 
     public ServiceInfo get(Class<?> clazz) {
-        return svcMetaMap.computeIfAbsent(clazz,k->{
+        return svcMetaMap.computeIfAbsent(clazz, k -> {
             Optional<RpcService> rpcSrOptional = Optional.ofNullable(clazz.getAnnotation(RpcService.class));
             String description = rpcSrOptional.map(o -> o.description()).orElse(StringUtils.EMPTY);
             NamingConvertEnum convert = rpcSrOptional.map(o -> o.convention()).orElse(NamingConvertEnum.PASCAL);
