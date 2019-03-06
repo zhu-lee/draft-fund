@@ -6,7 +6,7 @@ import lee.fund.remote.container.ServiceContainer;
 import lee.fund.remote.netty.server.NettyServer;
 import lee.fund.remote.netty.server.ServerConfig;
 import lee.fund.remote.registry.JetcdRegistry;
-import lee.fund.remote.registry.Provider;
+import lee.fund.util.jetcd.Provider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,8 +17,7 @@ import org.slf4j.LoggerFactory;
  * Desc:
  */
 public abstract class RemoteServer implements Server {
-    private static final Logger logger = LoggerFactory.getLogger(JetcdRegistry.class);
-    private static final JetcdRegistry registry = JetcdRegistry.getInstance();
+    private static final Logger logger = LoggerFactory.getLogger(RemoteServer.class);
     private NettyServer server;
     private ServiceContainer serviceContainer;
     private ServerConfiguration conf;
@@ -54,7 +53,7 @@ public abstract class RemoteServer implements Server {
     public void register() {
         //TODO 测试一下注册
         if (conf.isRpcRegisterEnabled()) {
-            registry.register(() -> this.getProvider(conf));
+            JetcdRegistry.getInstance().register(() -> this.getProvider(conf));
         }
     }
 

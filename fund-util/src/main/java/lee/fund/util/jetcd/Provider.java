@@ -1,4 +1,4 @@
-package lee.fund.remote.registry;
+package lee.fund.util.jetcd;
 
 import lombok.Getter;
 import lombok.Setter;

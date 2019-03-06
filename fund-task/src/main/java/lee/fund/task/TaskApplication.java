@@ -16,12 +16,10 @@ import java.util.Map;
  * Desc:
  */
 public class TaskApplication extends RemoteApplication {
-    protected Logger logger;
     protected TaskServer server;
 
     public TaskApplication(Class<?> bootStrap, String[] args, ServerConfiguration serverConfiguration) {
         super(bootStrap, args, serverConfiguration);
-        this.logger = LoggerFactory.getLogger(bootStrap);
         this.server = new TaskServer(serverConfiguration);
     }
 

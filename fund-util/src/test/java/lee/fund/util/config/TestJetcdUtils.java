@@ -1,10 +1,9 @@
 package lee.fund.util.config;
 
+import lee.fund.util.jetcd.JetcdClient;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 
 /**
  * Author: zhu.li
@@ -18,7 +17,7 @@ public class TestJetcdUtils {
     @Test
     public void testAction() throws Exception {
 //        JetcdUtils.getClient();
-        JetcdUtils.setNodeWithLease("lizhu","dddddd");
+//        JetcdClient.setNodeWithLease("lizhu","dddddd");
         logger.info("连接成功...");
 //        Thread.currentThread().sleep(20000);
         System.in.read();

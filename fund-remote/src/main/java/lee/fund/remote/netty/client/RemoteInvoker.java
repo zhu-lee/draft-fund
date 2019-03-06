@@ -35,7 +35,7 @@ public class RemoteInvoker implements Invoker {
     private static final ConcurrentMap<String, RemoteInvoker> invokersMap = new ConcurrentHashMap<>();
     private final ClientConfig clientConfig;
     private final ChannelPool channelPool;
-    private static final String appName = Strings.nullToEmpty(AppConf.instance().getServerConf().getName());
+    private static final String appName = Strings.nullToEmpty(AppConf.INSTANCE.getServerConf().getName());
 
     public RemoteInvoker(ClientConfig clientConfig, ChannelPool channelPool) {
         ObjectUtil.checkNotNull(clientConfig.getAddress(), "net address");

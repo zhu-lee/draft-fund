@@ -9,19 +9,59 @@ import java.util.Date;
  * Desc:   get message data
  */
 public interface Msg {
-    String getId();//获取消息ID
+    /**
+     * 获取消息ID
+     *
+     * @return
+     */
+    String getId();
 
-    String getBody();//获取消息内容
+    /**
+     * 获取消息内容
+     *
+     * @return
+     */
+    String getBody();
 
-    Date getTime();//获取消息原始创建时间
+    /**
+     * 获取消息原始创建时间
+     *
+     * @return
+     */
+    Date getTime();
 
-    Date getReceiveTime();//获取浙消息接收时间
+    /**
+     * 获取浙消息接收时间
+     *
+     * @return
+     */
+    Date getReceiveTime();
 
-    int getAttempts();//获取消息发送次数
+    /**
+     * 获取消息发送次数
+     *
+     * @return
+     */
+    int getAttempts();
 
-    void finished();//设置消息处理完成
+    /**
+     * 设置消息处理完成
+     *
+     * @return
+     */
+    void finished();
 
-    void requeue(int timeoutMillis);//消息重入队列
+    /**
+     * 消息重入队列
+     *
+     * @return
+     */
+    void requeue(int timeoutMillis);
 
-    void requeue();//消息重入队列
+    /**
+     * 消息重入队列
+     *
+     * @return
+     */
+    void requeue();
 }
