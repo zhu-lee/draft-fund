@@ -7,8 +7,6 @@ import lee.fund.util.config.ServerConf;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
@@ -21,7 +19,6 @@ import java.util.Objects;
 @Setter(AccessLevel.PROTECTED)
 @Getter
 public class ServerConfiguration {
-    private final Logger logger = LoggerFactory.getLogger(ServerConfiguration.class);
     private String name;
     private int port;
     private boolean isRpcRegisterEnabled;

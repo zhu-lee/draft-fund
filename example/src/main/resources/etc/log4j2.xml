@@ -2,7 +2,8 @@
 <configuration>
     <appenders>
         <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="[%-5p] %d{yyyy-MM-dd HH:mm:ss.SSS} %m%n"/>
+            <PatternLayout pattern="%d{yy-MM-dd HH:mm:ss\} %-5p %c:%L - %m%n"/>
+			<!--<JsonLayout/>-->
         </Console>
     </appenders>
     <loggers>

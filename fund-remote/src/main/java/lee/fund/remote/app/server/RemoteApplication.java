@@ -3,7 +3,9 @@ package lee.fund.remote.app.server;
 import lee.fund.remote.monitor.HttpMonitor;
 import lee.fund.util.config.ConfProperties;
 import lee.fund.util.config.ConfigUtils;
+import lee.fund.util.ioc.SpringContextHolder;
 import lee.fund.util.lang.StrUtils;
+import lee.fund.util.log.ConsoleLogger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -33,7 +35,7 @@ public abstract class RemoteApplication {
         Objects.requireNonNull(bootStrap, "bootClass can't be null");
         Objects.requireNonNull(args, "args can't be null");
 
-        this.springApplication = new SpringApplication(bootStrap);//TODO serviceLocatorAutoConfig 装载
+        this.springApplication = new SpringApplication(SpringContextHolder.class, bootStrap);//TODO serviceLocatorAutoConfig 装载
         this.bootStrap = bootStrap;
         this.args = args;
         this.serverConfiguration = serverConfiguration;
@@ -62,13 +64,16 @@ public abstract class RemoteApplication {
 
     private void setProperties() {
         Map<String, Object> properties = new HashMap<>();
-        properties.put("spring.main.show-banner", false);
-        String profile = ConfProperties.INSTANCE.getActiveProfile();
-        if (StrUtils.notBlank(profile)) {
-            properties.put("spring.profiles.active", profile);
-        }
+        String etcDir = ConfigUtils.getEtcFolder();
+        properties.put("spring.main.banner-mode", "off");
+        properties.put("spring.config.location", etcDir);
         properties.put("spring.config.name", "app");
-        properties.put("spring.config.location", ConfigUtils.getEtcFolder());
+        properties.put("spring.profiles.active", ConfProperties.INSTANCE.getActiveProfile());
+        String logConfigPath = ConfigUtils.searchConf("log4j2.xml");
+        if (logConfigPath == null) {
+            logConfigPath = ConfigUtils.searchGlobalConf("log4j2.xml");
+        }
+        properties.put("logging.config", logConfigPath);
         String[] excludes = {
                 "org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration",
                 "org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration",

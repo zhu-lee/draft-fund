@@ -55,7 +55,7 @@ public class ConfigUtils {
         return etcFolder;
     }
 
-    private static String getGlobalConfigDir() {
+    public static String getGlobalConfigDir() {
         if (globalFolder == null) {
             if (SysUtils.isLinuxOS()) {
                 globalFolder = "/home/fund/etc/";
@@ -72,5 +72,18 @@ public class ConfigUtils {
 
     public static String getConfPath(String filename) {
         return getEtcFolder() + filename;
+    }
+
+    /**
+     * 设置配置目录  etc  所在路径
+     *
+     * @param configPath
+     */
+    public static void setConfigDir(String configPath) {
+        if (configPath == null || configPath.trim().length() == 0) {
+            throw new IllegalArgumentException("arg configPath is null or empty");
+        }
+        ConsoleLogger.info("config > change config dir to " + configPath);
+        etcFolder = configPath;
     }
 }
