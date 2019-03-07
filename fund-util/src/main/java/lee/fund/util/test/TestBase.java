@@ -1,8 +1,9 @@
 package lee.fund.util.test;
 
 import com.alibaba.fastjson.JSON;
-import lee.fund.util.ioc.SpringContextHolder;
+import lee.fund.util.ioc.ServiceLocator;
 import lombok.Getter;
+
 import java.io.PrintStream;
 import java.util.Objects;
 
@@ -44,6 +45,6 @@ public abstract class TestBase {
     }
 
     public static <T> T getInstance(Class<T> type) {
-        return SpringContextHolder.getBean(type);
+        return ServiceLocator.INSTANCE.getBean(type);
     }
 }

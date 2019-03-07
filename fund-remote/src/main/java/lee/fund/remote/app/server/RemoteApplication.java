@@ -3,9 +3,7 @@ package lee.fund.remote.app.server;
 import lee.fund.remote.monitor.HttpMonitor;
 import lee.fund.util.config.ConfProperties;
 import lee.fund.util.config.ConfigUtils;
-import lee.fund.util.ioc.SpringContextHolder;
-import lee.fund.util.lang.StrUtils;
-import lee.fund.util.log.ConsoleLogger;
+import lee.fund.util.ioc.ServiceLocator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -35,7 +33,7 @@ public abstract class RemoteApplication {
         Objects.requireNonNull(bootStrap, "bootClass can't be null");
         Objects.requireNonNull(args, "args can't be null");
 
-        this.springApplication = new SpringApplication(SpringContextHolder.class, bootStrap);//TODO serviceLocatorAutoConfig 装载
+        this.springApplication = new SpringApplication(bootStrap);
         this.bootStrap = bootStrap;
         this.args = args;
         this.serverConfiguration = serverConfiguration;
@@ -92,6 +90,7 @@ public abstract class RemoteApplication {
     public void run() {
         this.startTime = LocalDateTime.now();
         this.applicationContext = this.springApplication.run(args);
+        ServiceLocator.INSTANCE.setCtx(this.applicationContext);
         this.load();
         this.startMonitor();
     }

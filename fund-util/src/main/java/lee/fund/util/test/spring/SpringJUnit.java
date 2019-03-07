@@ -2,12 +2,13 @@ package lee.fund.util.test.spring;
 
 import com.google.common.base.Strings;
 import lee.fund.util.config.ConfigUtils;
-import lee.fund.util.ioc.SpringContextHolder;
+import lee.fund.util.ioc.ServiceLocator;
 import lee.fund.util.lang.UncheckedException;
 import lee.fund.util.log.ConsoleLogger;
 import lee.fund.util.log.LoggerManager;
 import org.slf4j.Logger;
 import org.springframework.boot.SpringApplication;
+import org.springframework.context.ApplicationContext;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -61,7 +62,7 @@ public class SpringJUnit {
         System.setProperty("spring.config.location", MessageFormat.format("{0}spring.boot.properties,{0}", configPath));
         System.setProperty("spring.config.name", "app");
 
-        SpringApplication app = new SpringApplication(SpringContextHolder.class,configClass);
+        SpringApplication app = new SpringApplication(configClass);
         String xmlFilePath = ConfigUtils.searchConf("spring.xml");
         if (xmlFilePath != null) {
             log.info("found spring config: " + xmlFilePath);
@@ -74,12 +75,14 @@ public class SpringJUnit {
 
         app.setDefaultProperties(props);
         //
-//        app.addInitializers(ctx -> {
+        app.addInitializers(ctx -> {
 //            // TODO workaround, duplicate with AutoConfig, to refine
 //            SpringServiceLocator l = new SpringServiceLocator();
 //            l.setApplicationContext(ctx);
-//        });
-        app.run();
+            ServiceLocator.INSTANCE.setCtx(ctx);
+        });
+        ApplicationContext ctx = app.run();
+//        ServiceLocator.INSTANCE.setCtx(ctx);
     }
 
     public static boolean isRemoting(Class clazz) {

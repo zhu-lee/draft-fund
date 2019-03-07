@@ -31,7 +31,6 @@ public class LoggerManager {
             try (FileInputStream f = new FileInputStream(logConfigPath)) {
                 ConfigurationSource source = new ConfigurationSource(f);
                 Configurator.initialize(null, source);
-                System.out.println("111");
             } catch (Exception ex) {
                 ConsoleLogger.warn("config > failed to load [%s] at %s: %s-%s", fileName, logConfigPath, ex.getMessage(), Exceptions.getStackTrace(ex));
             }
