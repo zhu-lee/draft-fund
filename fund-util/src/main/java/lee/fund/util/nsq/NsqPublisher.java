@@ -6,7 +6,8 @@ import com.github.brainlag.nsq.NSQConfig;
 import com.github.brainlag.nsq.NSQProducer;
 import com.github.brainlag.nsq.ServerAddress;
 import com.google.common.base.Charsets;
-import lee.fund.util.config.AppConf;
+import lee.fund.util.config.GlobalConf;
+import lee.fund.util.config.ServerConf;
 import lee.fund.util.execute.Schedule;
 import lee.fund.util.lang.UncheckedException;
 import lee.fund.util.remote.RemoteCall;
@@ -28,7 +29,7 @@ import java.util.stream.Collectors;
  */
 public class NsqPublisher implements Publisher {
     private static Logger logger = LoggerFactory.getLogger(NsqPublisher.class);
-    private static final NSQConfig NSQ_CONFIG = new NSQConfig(AppConf.INSTANCE.getServerConf().getName(), AppConf.INSTANCE.getGlobalConf().getRpcRegisterIp());
+    private static final NSQConfig NSQ_CONFIG = new NSQConfig(ServerConf.instance().getName(), GlobalConf.instance().getRpcRegisterIp());
     public static final NsqPublisher INSTANCE = new NsqPublisher();
     private final ConcurrentMap<String, ProducerHolder> PRODUCERS = new ConcurrentHashMap<>();
     private final Random RANDOM = new Random();

@@ -1,12 +1,14 @@
 package lee.fund.util.test.spring;
 
 import com.google.common.base.Strings;
+import lee.fund.util.config.ConfProperties;
 import lee.fund.util.config.ConfigUtils;
 import lee.fund.util.ioc.ServiceLocator;
+import lee.fund.util.jetcd.JetcdClient;
 import lee.fund.util.lang.UncheckedException;
 import lee.fund.util.log.ConsoleLogger;
-import lee.fund.util.log.LoggerManager;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ApplicationContext;
 
@@ -22,8 +24,7 @@ import java.util.Set;
  * 基于 Spring 的 JUnit 辅助工具。
  */
 public class SpringJUnit {
-
-    private static final Logger log = LoggerManager.getLogger(SpringJUnit.class);
+    private static final Logger log = LoggerFactory.getLogger(JetcdClient.class);
 
     /**
      * @param configClass
@@ -58,10 +59,16 @@ public class SpringJUnit {
         Properties props = new Properties();
         props.put("spring.main.banner-mode", "off");
         props.put("spring.main.web_environment", false);
-
-        System.setProperty("spring.config.location", MessageFormat.format("{0}spring.boot.properties,{0}", configPath));
-        System.setProperty("spring.config.name", "app");
-
+        props.put("spring.config.location", configPath);
+        props.put("spring.config.name", "app");
+        props.put("spring.profiles.active", ConfProperties.INSTANCE.getActiveProfile());
+        String logConfigPath = ConfigUtils.searchConf("log4j2.xml");
+        if (logConfigPath == null) {
+            logConfigPath = ConfigUtils.searchGlobalConf("log4j2.xml");
+        }
+        props.put("logging.config", logConfigPath);
+//        System.setProperty("spring.config.location", MessageFormat.format("{0}spring.boot.properties,{0}", configPath));
+//        System.setProperty("spring.config.name", "app");
         SpringApplication app = new SpringApplication(configClass);
         String xmlFilePath = ConfigUtils.searchConf("spring.xml");
         if (xmlFilePath != null) {
@@ -72,17 +79,11 @@ public class SpringJUnit {
         } else {
             log.info("not found spring root xml " + xmlFilePath);
         }
-
         app.setDefaultProperties(props);
-        //
         app.addInitializers(ctx -> {
-//            // TODO workaround, duplicate with AutoConfig, to refine
-//            SpringServiceLocator l = new SpringServiceLocator();
-//            l.setApplicationContext(ctx);
             ServiceLocator.INSTANCE.setCtx(ctx);
         });
-        ApplicationContext ctx = app.run();
-//        ServiceLocator.INSTANCE.setCtx(ctx);
+        app.run();
     }
 
     public static boolean isRemoting(Class clazz) {

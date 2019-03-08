@@ -1,7 +1,6 @@
 package lee.fund.remote.app.server;
 
 import com.google.common.base.Strings;
-import lee.fund.util.config.AppConf;
 import lee.fund.util.config.GlobalConf;
 import lee.fund.util.config.ServerConf;
 import lombok.AccessLevel;
@@ -30,8 +29,8 @@ public class ServerConfiguration {
     private String registerIp;
 
     public ServerConfiguration() {
-        ServerConf serverConf = AppConf.INSTANCE.getServerConf();
-        GlobalConf globalConf = AppConf.INSTANCE.getGlobalConf();
+        ServerConf serverConf = ServerConf.instance();
+        GlobalConf globalConf = GlobalConf.instance();
 
         requireNonNull(serverConf.getName(), "server name is empty");
         this.name = serverConf.getName();
@@ -40,7 +39,8 @@ public class ServerConfiguration {
         requireNonNull(globalConf.getRpcRegisterIp(), "register ip is empty");
         this.registerIp = globalConf.getRpcRegisterIp();
 
-        this.isRpcRegisterEnabled = globalConf.isRpcRegisterEnabled();
+//        this.isRpcRegisterEnabled = globalConf.isRpcRegisterEnabled();
+        this.isRpcRegisterEnabled = serverConf.isRegister();
 
         this.desc = Strings.isNullOrEmpty(serverConf.getDesc()) ? serverConf.getName() : serverConf.getDesc();
         if (serverConf.getOption().getConnections() > 0) {

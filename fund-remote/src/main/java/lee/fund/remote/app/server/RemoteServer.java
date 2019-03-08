@@ -1,5 +1,6 @@
 package lee.fund.remote.app.server;
 
+import com.alibaba.fastjson.JSON;
 import lee.fund.remote.Server;
 import lee.fund.remote.app.client.RemoteClient;
 import lee.fund.remote.container.ServiceContainer;
@@ -54,6 +55,14 @@ public abstract class RemoteServer implements Server {
         //TODO 测试一下注册
         if (conf.isRpcRegisterEnabled()) {
             JetcdRegistry.getInstance().register(() -> this.getProvider(conf));
+//            Provider provider = this.getProvider(conf);
+//            String value = JSON.toJSONString(provider);
+//            try {
+//                JetcdRegistry.getInstance().register(() -> provider);
+//                logger.info("server[{}] register success: {}", provider.getName(), value);
+//            } catch (Exception e) {
+//                logger.info(String.format("server[%s] register failed", provider.getName()), e);
+//            }
         }
     }
 

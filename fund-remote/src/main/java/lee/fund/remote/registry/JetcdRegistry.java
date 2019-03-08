@@ -47,7 +47,7 @@ public class JetcdRegistry extends JetcdCall {
     private void register(Provider provider) {
         try {
             String offlineNodePath = this.getOfflineNodePath(provider.getName(), provider.getAddress());
-//            logger.info(offlineNodePath);
+//            logger.info("query offlineNodePath={}",offlineNodePath);
             List<KeyValue> keyValues = this.getNodes(offlineNodePath);
             if (keyValues != null && !keyValues.isEmpty()) {
                 logger.info("register failed，node [{} - {}] is offline", provider.getName(), provider.getAddress());
@@ -55,10 +55,10 @@ public class JetcdRegistry extends JetcdCall {
             }
 
             String nodePath = this.getNodePath(provider.getName(), provider.getAddress());
-//            logger.info(nodePath);
+            logger.info("query nodePath={}",nodePath);
             String JsonValue = JSON.toJSONString(provider);
             this.setNodeWithLease(nodePath, JsonValue);
-            logger.info("register success: node [{} - {}]", provider.getName(), provider.getAddress());
+            logger.info("register success：{}", JsonValue);
         } catch (Exception e) {
             logger.error("register error：node [{} - {}]", provider.getName(), provider.getAddress(), e);
             return;

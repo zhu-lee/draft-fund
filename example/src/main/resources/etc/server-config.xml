@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
-    <server name="fund-example" port="9268" desc="fund-example服务">
+    <server name="fund-example" register="true" port="9268" desc="fund-example服务">
         <option name="connections" value="2000"/>
         <option name="debug" value="true"/>
         <option name="monitor_enabled" value="true"/>

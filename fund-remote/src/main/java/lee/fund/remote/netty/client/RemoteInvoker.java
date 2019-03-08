@@ -14,7 +14,7 @@ import lee.fund.remote.protocol.RemoteCoder;
 import lee.fund.remote.protocol.RemoteValue;
 import lee.fund.remote.protocol.RequestMessage;
 import lee.fund.remote.protocol.ResponseMessage;
-import lee.fund.util.config.AppConf;
+import lee.fund.util.config.ServerConf;
 import lee.fund.util.lang.FaultException;
 import lee.fund.util.lang.StrUtils;
 
@@ -35,7 +35,7 @@ public class RemoteInvoker implements Invoker {
     private static final ConcurrentMap<String, RemoteInvoker> invokersMap = new ConcurrentHashMap<>();
     private final ClientConfig clientConfig;
     private final ChannelPool channelPool;
-    private static final String appName = Strings.nullToEmpty(AppConf.INSTANCE.getServerConf().getName());
+    private static final String appName = Strings.nullToEmpty(ServerConf.instance().getName());
 
     public RemoteInvoker(ClientConfig clientConfig, ChannelPool channelPool) {
         ObjectUtil.checkNotNull(clientConfig.getAddress(), "net address");

@@ -10,7 +10,7 @@ import com.coreos.jetcd.options.GetOption;
 import com.coreos.jetcd.options.PutOption;
 import com.coreos.jetcd.options.WatchOption;
 import com.google.common.base.Strings;
-import lee.fund.util.config.AppConf;
+import lee.fund.util.config.GlobalConf;
 import lee.fund.util.execute.NamedThreadFactory;
 import lee.fund.util.lang.UncheckedException;
 import org.slf4j.Logger;
@@ -56,7 +56,7 @@ public class JetcdClient {
 
     private void init() {
         if (this.client == null) {
-            String address = AppConf.INSTANCE.getGlobalConf().getEtcdAdress();
+            String address = GlobalConf.instance().getEtcdAdress();
             if (Strings.isNullOrEmpty(address)) {
                 throw new UncheckedException("etcd.address can't be null or empty");
             }
