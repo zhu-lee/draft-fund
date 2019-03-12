@@ -1,9 +1,11 @@
 package lee.fund.remote.app.server;
 
+import com.google.common.base.Strings;
 import lee.fund.remote.monitor.HttpMonitor;
 import lee.fund.util.config.ConfProperties;
 import lee.fund.util.config.ConfigUtils;
 import lee.fund.util.ioc.ServiceLocator;
+import lee.fund.util.log.ConsoleLogger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -70,6 +72,9 @@ public abstract class RemoteApplication {
         String logConfigPath = ConfigUtils.searchConf("log4j2.xml");
         if (logConfigPath == null) {
             logConfigPath = ConfigUtils.searchGlobalConf("log4j2.xml");
+        }
+        if (!Strings.isNullOrEmpty(logConfigPath)) {
+            ConsoleLogger.info("config > found %s", logConfigPath);
         }
         properties.put("logging.config", logConfigPath);
         String[] excludes = {

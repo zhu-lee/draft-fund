@@ -8,7 +8,8 @@ import com.github.brainlag.nsq.NSQMessage;
 import com.github.brainlag.nsq.lookup.NSQLookup;
 import lee.fund.mq.Msg;
 import lee.fund.mq.Subscriber;
-import lee.fund.util.config.AppConf;
+import lee.fund.util.config.GlobalConf;
+import lee.fund.util.config.ServerConf;
 import lee.fund.util.execute.Schedule;
 import lee.fund.util.remote.RemoteCall;
 import lombok.Getter;
@@ -28,7 +29,7 @@ import java.util.List;
  */
 public class NsqSubscriber implements Subscriber {
     private Logger logger = LoggerFactory.getLogger(NsqSubscriber.class);
-    private static final NSQConfig NSQ_CONFIG = new NSQConfig(AppConf.INSTANCE.getServerConf().getName(), AppConf.INSTANCE.getGlobalConf().getRpcRegisterIp());
+    private static final NSQConfig NSQ_CONFIG = new NSQConfig(ServerConf.instance().getName(), GlobalConf.instance().getRpcRegisterIp());
     public static final NsqSubscriber INSTANCE = new NsqSubscriber();
     private final int INTERVAL = 60 * 1000;
     private NSQLookup lookup;

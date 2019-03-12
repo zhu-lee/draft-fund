@@ -100,7 +100,7 @@ public class TaskServiceImp implements TaskService {
             param.setStartTime(start);
             param.setEndTime(end);
 
-            Result returnResult = notifyService.notify(param);
+            Result returnResult = notifyService.notify(param);//Go 的skynet服务
             if (!returnResult.Success) {
                 logger.error("通知任务状态错误，id：{}，name：{}，error：{}", id, name, returnResult.ErrorInfo);
             }

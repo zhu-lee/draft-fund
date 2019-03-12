@@ -62,10 +62,11 @@ public class JetcdClient {
             }
             try {
                 this.client = Client.builder().endpoints(Arrays.asList(address.split(","))).build();
+                this.getNodes("test");
+                logger.info("etcd client endpoints={} setting success", address);
             } catch (Exception e) {
-                throw new UncheckedException("etcd client setting error", e);
+                logger.error(String.format("etcd client endpoints=%s setting error", address), e);
             }
-            logger.info("etcd client setting success");
         }
     }
 

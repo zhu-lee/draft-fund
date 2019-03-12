@@ -2,6 +2,7 @@ package lee.fund.example;
 
 import lee.fund.app.Application;
 import lee.fund.remote.app.server.ServerConfiguration;
+import lee.fund.task.TaskApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
@@ -16,5 +17,8 @@ public class Bootstrap {
         ServerConfiguration configuration=new ServerConfiguration();
         Application app = new Application(Bootstrap.class, configuration, args);
         app.run();
+//        ServerConfiguration configuration=new ServerConfiguration();
+//        TaskApplication app = new TaskApplication(Bootstrap.class, configuration, args);
+//        app.run();
     }
 }
