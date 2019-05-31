@@ -34,9 +34,9 @@ import java.util.concurrent.RejectedExecutionException;
  */
 @ChannelHandler.Sharable
 public class ServerHandler extends SimpleChannelInboundHandler<RequestMessage> {
-    private static final Logger logger = LoggerFactory.getLogger(ServerHandler.class);
+    private final Logger logger = LoggerFactory.getLogger(ServerHandler.class);
     @Getter
-    private static final DefaultChannelGroup channelGroup = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
+    private final DefaultChannelGroup channelGroup = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
     private final NettyServer server;
 
     public ServerHandler(NettyServer server) {

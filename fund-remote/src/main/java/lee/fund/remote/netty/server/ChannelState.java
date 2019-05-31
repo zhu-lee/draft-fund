@@ -14,11 +14,13 @@ import java.time.LocalDateTime;
  * Desc:
  */
 @NoArgsConstructor
+@Setter
+@Getter
 public class ChannelState {
     public static final AttributeKey<ChannelState> KEY = AttributeKey.newInstance("ChannelState");
-    @Setter @Getter private final LocalDateTime createTime = LocalDateTime.now();
-    @Setter @Getter private LocalDateTime activeTime = LocalDateTime.now();
-    @Setter @Getter private String id = "";
-    @Setter @Getter private String service;
-    @Setter @Getter private String method;
+    private final LocalDateTime createTime = LocalDateTime.now();
+    private LocalDateTime activeTime = LocalDateTime.now();
+    private String id = "";
+    private String service;
+    private String method;
 }
