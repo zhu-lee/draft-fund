@@ -22,22 +22,14 @@ public class SimpleClientChannel extends NioSocketChannel {
         this.responseMessage = null;
     }
 
-    public void set(ResponseMessage msg) {
-        lock.lock();
-        try {
-            this.responseMessage = msg;
-        } finally {
-            lock.unlock();
-        }
-    }
-
     public ResponseMessage get(long timeout) throws InterruptedException {
         lock.lock();
         try {
-            long now = System.currentTimeMillis();
+            long end = System.currentTimeMillis() + timeout;
+            long time = timeout;
             while (responseMessage == null) {
-                boolean ok = hasMessage.await(timeout, TimeUnit.MILLISECONDS);
-                if (ok || (System.currentTimeMillis() - now >= timeout)) {
+                boolean ok = hasMessage.await(time, TimeUnit.MILLISECONDS);
+                if (ok || (time = end - System.currentTimeMillis()) <= 0) {
                     break;
                 }
             }
@@ -45,5 +37,15 @@ public class SimpleClientChannel extends NioSocketChannel {
             lock.unlock();
         }
         return responseMessage;
+    }
+
+    public void set(ResponseMessage msg) {
+        lock.lock();
+        try {
+            this.responseMessage = msg;
+            hasMessage.signal();
+        } finally {
+            lock.unlock();
+        }
     }
 }
