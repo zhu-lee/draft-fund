@@ -25,7 +25,7 @@
     <encoding.source>UTF-8</encoding.source>
     <jdk.version>1.8</jdk.version>
     <lombok.version>1.18.4</lombok.version>
-    <junit.version>4.12</junit.version>
+    <junit.version>4.13.1</junit.version>
     <maven.compiler.version>3.3</maven.compiler.version>
     <netty.version>4.1.31.Final</netty.version>
     <lombok.version>1.18.4</lombok.version>
